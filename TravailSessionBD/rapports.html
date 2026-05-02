@@ -3,14 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Gestion d'inventaire - Père Canuel</title>
+  <title>Rapports - Père Canuel</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-  <link type="text/css" rel="stylesheet" href="styles/produits-transformes.css"/>
+  <link type="text/css" rel="stylesheet" href="styles/index.css"/>
 </head>
 
 <body>
-
   <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
       <a class="navbar-brand fw-bold" href="index.html">
@@ -24,56 +23,28 @@
 
       <div class="collapse navbar-collapse" id="navbarMenu">
         <ul class="navbar-nav ms-auto">
-
           <li class="nav-item">
             <a class="nav-link" href="index.html">Accueil</a>
           </li>
 
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle active" href="#" id="produitsDropdown" role="button" 
-              data-bs-toggle="dropdown" aria-expanded="false">
+            <a class="nav-link dropdown-toggle" href="#" id="produitsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Produits
             </a>
-
             <ul class="dropdown-menu" aria-labelledby="produitsDropdown">
-              <li>
-                <a class="dropdown-item" href="produits-bruts.html">
-                  Produits bruts
-                </a>
-              </li>
-
-              <li>
-                <a class="dropdown-item" href="produits-transformes.html">
-                  Produits transformés
-                </a>
-              </li>
+              <li><a class="dropdown-item" href="produits-bruts.html">Produits bruts</a></li>
+              <li><a class="dropdown-item" href="produits-transformes.html">Produits transformés</a></li>
             </ul>
           </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="fournisseurs.html">Fournisseurs</a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link" href="clients.html">Clients</a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link" href="commandes.html">Commandes</a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link" href="production.html">Production</a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link" href="rapports.html">Rapports</a>
-          </li>
+          <li class="nav-item"><a class="nav-link" href="fournisseurs.html">Fournisseurs</a></li>
+          <li class="nav-item"><a class="nav-link" href="clients.html">Clients</a></li>
+          <li class="nav-item"><a class="nav-link" href="commandes.html">Commandes</a></li>
+          <li class="nav-item"><a class="nav-link" href="production.html">Production</a></li>
+          <li class="nav-item"><a class="nav-link active" href="rapports.html">Rapports</a></li>
 
           <li class="nav-item dropdown ms-lg-3">
-            <a class="nav-link dropdown-toggle d-flex align-items-center" 
-              href="#" id="userDropdown" role="button" 
-              data-bs-toggle="dropdown" aria-expanded="false">
+            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               <span class="user-avatar me-2">
                 <i class="bi bi-person-fill"></i>
               </span>
@@ -81,24 +52,19 @@
             </a>
 
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-              <li> 
+              <li>
                 <a class="dropdown-item" href="#">
                   <i class="bi bi-person-circle me-2"></i>
                   Mon profil
                 </a>
               </li>
-
               <li>
                 <a class="dropdown-item" href="#">
                   <i class="bi bi-gear me-2"></i>
                   Paramètres
                 </a>
               </li>
-
-              <li>
-                <hr class="dropdown-divider">
-              </li>
-
+              <li><hr class="dropdown-divider"></li>
               <li>
                 <a class="dropdown-item text-danger" href="connexion.html">
                   <i class="bi bi-box-arrow-right me-2"></i>
@@ -107,124 +73,98 @@
               </li>
             </ul>
           </li>
+
         </ul>
       </div>
     </div>
   </nav>
+
   <header class="page-header">
     <div class="container">
-      <h1>Produits transformés</h1>
-      <p class="text-muted">
-        Gestion des produits fabriqués et vendus aux clients.
-      </p>
+      <h1>Rapports</h1>
+      <p class="text-muted">Visualisation des ventes, des coûts de production et de la consommation des produits bruts.</p>
     </div>
   </header>
+
   <main class="container my-5">
     <section class="mb-5">
-      <h2 class="section-title mb-4">Ajouter un produit transformé</h2>
+      <h2 class="section-title mb-4">Filtres du rapport</h2>
 
       <div class="card shadow-sm p-4">
         <form>
-          <div class="row g-3">
-
-            <div class="col-md-6">
-              <label for="nomProduit" class="form-label">Nom du produit</label>
-              <input 
-                type="text" 
-                class="form-control" 
-                id="nomProduit" 
-                placeholder="Ex. Choucroute nature"
-              >
+          <div class="row g-3 align-items-end">
+            <div class="col-md-4">
+              <label for="typeRapport" class="form-label">Type de rapport</label>
+              <select class="form-select" id="typeRapport">
+                <option selected>Rapport des ventes par produit</option>
+                <option>Rapport des coûts de production</option>
+                <option>Rapport de consommation des produits bruts</option>
+              </select>
             </div>
 
             <div class="col-md-3">
-              <label for="quantite" class="form-label">Quantité en inventaire</label>
-              <input 
-                type="number" 
-                class="form-control" 
-                id="quantite" 
-                placeholder="Ex. 40"
-              >
+              <label for="dateDebut" class="form-label">Date de début</label>
+              <input type="date" class="form-control" id="dateDebut">
             </div>
 
             <div class="col-md-3">
-              <label for="unite" class="form-label">Unité</label>
-              <select class="form-select" id="unite">
-                <option selected>Choisir...</option>
-                <option>unités</option>
-                <option>pots</option>
-                <option>kg</option>
-                <option>L</option>
-              </select>
+              <label for="dateFin" class="form-label">Date de fin</label>
+              <input type="date" class="form-control" id="dateFin">
             </div>
 
-            <div class="col-md-4">
-              <label for="prixVente" class="form-label">Prix de vente</label>
-              <input 
-                type="number" 
-                class="form-control" 
-                id="prixVente" 
-                placeholder="Ex. 8.00"
-              >
-            </div>
-
-            <div class="col-md-4">
-              <label for="categorie" class="form-label">Catégorie</label>
-              <select class="form-select" id="categorie">
-                <option selected>Choisir...</option>
-                <option>Tempeh</option>
-                <option>Choucroute</option>
-                <option>Kimchi</option>
-                <option>Produit lacto-fermenté</option>
-              </select>
-            </div>
-
-            <div class="col-md-4">
-              <label for="statut" class="form-label">Statut</label>
-              <select class="form-select" id="statut">
-                <option>Disponible</option>
-                <option>Stock faible</option>
-                <option>Indisponible</option>
-              </select>
-            </div>
-
-            <div class="col-12">
-              <label for="commentaire" class="form-label">Commentaire</label>
-              <textarea 
-                class="form-control" 
-                id="commentaire" 
-                rows="3" 
-                placeholder="Ex. Produit très demandé par les restaurants."
-              ></textarea>
-            </div>
-
-            <div class="col-12">
-              <button type="submit" class="btn btn-principal">
-                <i class="bi bi-plus-circle me-2"></i>
-                Ajouter le produit transformé
+            <div class="col-md-2">
+              <button type="submit" class="btn btn-principal w-100">
+                <i class="bi bi-search me-2"></i>
+                Générer
               </button>
             </div>
-
           </div>
         </form>
       </div>
     </section>
 
-    <!-- Tableau -->
-    <section>
-      <h2 class="section-title mb-4">Liste des produits transformés</h2>
+    <section class="mb-5">
+      <h2 class="section-title mb-4">Résumé des indicateurs</h2>
+
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="card shadow-sm p-4 h-100">
+            <h5><i class="bi bi-cash-coin me-2 text-success"></i>Ventes totales</h5>
+            <p class="display-6 fw-bold mb-1">12 450 $</p>
+            <p class="text-muted mb-0">Pour la période sélectionnée</p>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card shadow-sm p-4 h-100">
+            <h5><i class="bi bi-box-seam me-2 text-warning"></i>Coûts de production</h5>
+            <p class="display-6 fw-bold mb-1">7 320 $</p>
+            <p class="text-muted mb-0">Produits bruts et main-d’œuvre</p>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card shadow-sm p-4 h-100">
+            <h5><i class="bi bi-graph-up-arrow me-2 text-primary"></i>Profit estimé</h5>
+            <p class="display-6 fw-bold mb-1">5 130 $</p>
+            <p class="text-muted mb-0">Ventes moins coûts estimés</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-5">
+      <h2 class="section-title mb-4">Rapport des ventes par produit</h2>
 
       <div class="table-responsive">
         <table class="table table-bordered align-middle">
           <thead class="table-light">
             <tr>
-              <th>Nom</th>
-              <th>Catégorie</th>
-              <th>Quantité</th>
-              <th>Unité</th>
-              <th>Prix de vente</th>
-              <th>Statut</th>
-              <th>Commentaire</th>
+              <th>Produit</th>
+              <th>Quantité vendue</th>
+              <th>Produit des ventes</th>
+              <th>Coût de production</th>
+              <th>Profit estimé</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -232,12 +172,10 @@
           <tbody>
             <tr>
               <td>Choucroute nature</td>
-              <td>Choucroute</td>
-              <td>40</td>
-              <td>unités</td>
-              <td>8.00 $</td>
-              <td><span class="badge bg-success">Disponible</span></td>
-              <td>Produit régulier.</td>
+              <td>240 unités</td>
+              <td>1 920 $</td>
+              <td>1 050 $</td>
+              <td><span class="badge bg-success">870 $</span></td>
               <td>
                 <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modifierModal">
                   <i class="bi bi-pencil-square"></i>
@@ -248,15 +186,12 @@
                 </button>
               </td>
             </tr>
-
             <tr>
               <td>Kimchi traditionnel</td>
-              <td>Kimchi</td>
-              <td>12</td>
-              <td>unités</td>
-              <td>9.50 $</td>
-              <td><span class="badge bg-warning text-dark">Stock faible</span></td>
-              <td>Produit populaire auprès des restaurants.</td>
+              <td>180 unités</td>
+              <td>1 710 $</td>
+              <td>980 $</td>
+              <td><span class="badge bg-success">730 $</span></td>
               <td>
                 <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modifierModal">
                   <i class="bi bi-pencil-square"></i>
@@ -267,15 +202,12 @@
                 </button>
               </td>
             </tr>
-
             <tr>
               <td>Tempeh de pois</td>
-              <td>Tempeh</td>
-              <td>30</td>
-              <td>unités</td>
-              <td>7.25 $</td>
-              <td><span class="badge bg-success">Disponible</span></td>
-              <td>Produit principal de l’entreprise.</td>
+              <td>300 unités</td>
+              <td>2 175 $</td>
+              <td>1 420 $</td>
+              <td><span class="badge bg-success">755 $</span></td>
               <td>
                 <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modifierModal">
                   <i class="bi bi-pencil-square"></i>
@@ -286,15 +218,12 @@
                 </button>
               </td>
             </tr>
-
             <tr>
               <td>Betteraves lacto-fermentées</td>
-              <td>Produit lacto-fermenté</td>
-              <td>0</td>
-              <td>pots</td>
-              <td>6.75 $</td>
-              <td><span class="badge bg-danger">Indisponible</span></td>
-              <td>Nouvelle production à planifier.</td>
+              <td>90 pots</td>
+              <td>607.50 $</td>
+              <td>430 $</td>
+              <td><span class="badge bg-warning text-dark">177.50 $</span></td>
               <td>
                 <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modifierModal">
                   <i class="bi bi-pencil-square"></i>
@@ -310,17 +239,54 @@
       </div>
     </section>
 
+    <section>
+      <h2 class="section-title mb-4">Consommation des produits bruts</h2>
+
+      <div class="table-responsive">
+        <table class="table table-bordered align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Produit brut</th>
+              <th>Quantité utilisée</th>
+              <th>Moyenne mensuelle</th>
+              <th>Tendance</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>Pois jaunes</td>
+              <td>120 kg</td>
+              <td>40 kg</td>
+              <td><span class="badge bg-success">Stable</span></td>
+            </tr>
+            <tr>
+              <td>Chou vert</td>
+              <td>210 kg</td>
+              <td>70 kg</td>
+              <td><span class="badge bg-primary">En hausse</span></td>
+            </tr>
+            <tr>
+              <td>Sel de mer</td>
+              <td>25 kg</td>
+              <td>8.3 kg</td>
+              <td><span class="badge bg-warning text-dark">À surveiller</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
   </main>
 
   <footer class="footer-pro">
     <div class="container py-4">
       <div class="row gy-4 align-items-center">
+
         <div class="col-lg-5 col-md-12">
           <h5 class="footer-title">
             <i class="bi bi-basket2-fill me-2"></i>
             La fermenterie du Père Canuel
           </h5>
-
           <p class="footer-text mb-0">
             Système de gestion d’inventaire pour le suivi des produits,
             des stocks, des commandes et de la production.
@@ -329,37 +295,34 @@
 
         <div class="col-lg-4 col-md-12">
           <h6 class="footer-subtitle">Contact</h6>
-
           <p class="footer-text mb-2">
             <i class="bi bi-envelope me-2"></i>
-              contact@perecanuel.com
+            contact@perecanuel.com
           </p>
-
           <p class="footer-text mb-0">
             <i class="bi bi-globe me-2"></i>
-              www.perecanuel.com
+            www.perecanuel.com
           </p>
         </div>
+
         <div class="col-lg-3 col-md-12">
           <h6 class="footer-subtitle">Adresse</h6>
           <p class="footer-text mb-2">
             <i class="bi bi-geo-alt me-2"></i>
-              Bas-Saint-Laurent, Québec
+            Bas-Saint-Laurent, Québec
           </p>
           <p class="footer-text mb-0">
             <i class="bi bi-telephone me-2"></i>
-              +1 418-555-1234
+            +1 418-555-1234
           </p>
         </div>
-
       </div>
       <hr class="footer-line">
-        <div class="text-center">
-          <p class="footer-bottom mb-1">
-            © 2026 La fermenterie du Père Canuel. Tous droits réservés.
-          </p>
-        </div>
-      </hr>
+      <div class="text-center">
+        <p class="footer-bottom mb-1">
+          © 2026 La fermenterie du Père Canuel. Tous droits réservés.
+        </p>
+      </div>
     </div>
   </footer>
 
@@ -435,10 +398,6 @@
     </div>
   </div>
 
-
-  <script 
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
-  </script>
-
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

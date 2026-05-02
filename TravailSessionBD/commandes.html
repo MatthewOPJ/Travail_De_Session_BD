@@ -170,16 +170,13 @@
                 Enregistrer la commande
               </button>
             </div>
-
           </div>
         </form>
       </div>
     </section>
 
-    <!-- Tableau commandes -->
     <section>
       <h2 class="section-title mb-4">Liste des commandes</h2>
-
       <div class="table-responsive">
         <table class="table table-bordered align-middle">
           <thead class="table-light">
@@ -318,6 +315,69 @@
     </hr>
   </div>
 </footer>
+
+<div class="modal fade" id="modifierModal" tabindex="-1" aria-labelledby="modifierModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modifierModalLabel">
+            Modifier commande
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="client" class="form-label">Nom du client</label>
+                <input type="text" class="form-control" id="client">
+              </div>
+
+              <div class="col-md-6">
+                <label for="produit" class="form-label">Produit commandé</label>
+                <select class="form-select" id="produit">
+                  <option selected>Choisir un produit...</option>
+                  <option>Choucroute nature 500 g</option>
+                  <option>Kimchi traditionnel 500 g</option>
+                  <option>Cornichons à l’aneth 1 L</option>
+                  <option>Betteraves lacto-fermentées 500 g</option>
+                </select>
+              </div>
+
+              <div class="col-md-4">
+                <label for="quantite" class="form-label">Quantité</label>
+                <input type="number" class="form-control" id="quantite">
+              </div>
+
+              <div class="col-md-4">
+                <label for="dateCommande" class="form-label">Date de commande</label>
+                <input type="date" class="form-control" id="dateCommande">
+              </div>
+
+              <div class="col-md-4">
+                <label for="statut" class="form-label">Statut</label>
+                <select class="form-select" id="statut">
+                  <option>En préparation</option>
+                  <option>Confirmée</option>
+                  <option>Expédiée</option>
+                  <option>Livrée</option>
+                </select>
+              </div>
+            </div>
+          </form> 
+        </div>      
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Annuler
+          </button>
+          <button type="submit" class="btn btn-principal" onclick="">
+            <i class="bi bi-check-circle me-2"></i>
+            Modifier
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script 
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">

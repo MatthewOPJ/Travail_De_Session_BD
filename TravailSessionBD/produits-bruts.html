@@ -128,7 +128,6 @@
       <div class="card shadow-sm p-4">
         <form>
           <div class="row g-3">
-
             <div class="col-md-6">
               <label for="nomProduit" class="form-label">Nom du produit</label>
               <input 
@@ -185,7 +184,6 @@
                 Ajouter le produit brut
               </button>
             </div>
-
           </div>
         </form>
       </div>
@@ -336,6 +334,84 @@
       </hr>
     </div>
   </footer>
+
+  <div class="modal fade" id="modifierModal" tabindex="-1" aria-labelledby="modifierModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modifierModalLabel">
+            Modifier produit brut
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="nomProduit" class="form-label">Nom du produit</label>
+              <input 
+                type="text" 
+                class="form-control" 
+                id="nomProduit" 
+                placeholder="Ex. Pois jaunes"
+              >
+            </div>
+
+            <div class="col-md-3">
+              <label for="quantite" class="form-label">Quantité en stock</label>
+              <input 
+                type="number" 
+                class="form-control" 
+                id="quantite" 
+                placeholder="Ex. 50"
+              >
+            </div>
+
+            <div class="col-md-3">
+              <label for="unite" class="form-label">Unité</label>
+              <select class="form-select" id="unite">
+                <option selected>Choisir...</option>
+                <option>kg</option>
+                <option>g</option>
+                <option>L</option>
+                <option>unité</option>
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label for="prix" class="form-label">Prix unitaire moyen</label>
+              <input type="number" class="form-control" id="prix" placeholder="Ex. 3.50">
+            </div>
+
+            <div class="col-md-4">
+              <label for="fournisseur" class="form-label">Fournisseur principal</label>
+              <input type="text" class="form-control" id="fournisseur" placeholder="Ex. Ferme locale">
+            </div>
+
+            <div class="col-md-4">
+              <label for="statut" class="form-label">Statut</label>
+              <select class="form-select" id="statut">
+                <option>Disponible</option>
+                <option>Stock faible</option>
+                <option>Rupture de stock</option>
+              </select>
+            </div>
+          </div>
+        </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Annuler
+          </button>
+          <button type="submit" class="btn btn-principal" onclick="">
+            <i class="bi bi-check-circle me-2"></i>
+            Modifier
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
   <script 
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">

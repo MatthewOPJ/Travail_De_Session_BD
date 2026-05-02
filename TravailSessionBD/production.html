@@ -158,6 +158,7 @@
               <th>Durée prévue</th>
               <th>Taux horaire</th>
               <th>Statut</th>
+              <th>Actions</th>
             </tr>
           </thead>
 
@@ -169,6 +170,15 @@
               <td>5 h</td>
               <td>22 $ / h</td>
               <td><span class="badge bg-warning text-dark">Planifiée</span></td>
+              <td>
+                <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modifierModal">
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+
+                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#supprimerModal">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
             </tr>
             <tr>
               <td>24 mai 2026</td>
@@ -177,6 +187,15 @@
               <td>4 h</td>
               <td>22 $ / h</td>
               <td><span class="badge bg-info text-dark">En préparation</span></td>
+              <td>
+                <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modifierModal">
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+
+                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#supprimerModal">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
             </tr>
             <tr>
               <td>27 mai 2026</td>
@@ -185,6 +204,15 @@
               <td>6 h</td>
               <td>22 $ / h</td>
               <td><span class="badge bg-secondary">À venir</span></td>
+              <td>
+                <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modifierModal">
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+
+                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#supprimerModal">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -208,7 +236,6 @@
               <th>Stock actuel</th>
               <th>En commande</th>
               <th>Situation</th>
-              <th>Actions</th>
             </tr>
           </thead>
 
@@ -290,6 +317,78 @@
       </div>
     </div>
   </footer>
+
+  <div class="modal fade" id="modifierModal" tabindex="-1" aria-labelledby="modifierModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modifierModalLabel">
+            Modifier fournisseur
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="nomFournisseur" class="form-label">Nom du fournisseur</label>
+              <input type="text" class="form-control" id="nomFournisseur">
+            </div>
+
+            <div class="col-md-6">
+              <label for="contactFournisseur" class="form-label">Personne contact</label>
+              <input type="text" class="form-control" id="contactFournisseur">
+            </div>
+
+            <div class="col-md-6">
+              <label for="telephoneFournisseur" class="form-label">Téléphone</label>
+              <input type="text" class="form-control" id="telephoneFournisseur">
+            </div>
+
+            <div class="col-md-6">
+              <label for="courrielFournisseur" class="form-label">Courriel</label>
+              <input type="email" class="form-control" id="courrielFournisseur">
+            </div>
+
+            <div class="col-md-6">
+              <label for="siteFournisseur" class="form-label">Site web</label>
+              <input type="text" class="form-control" id="siteFournisseur">
+            </div>
+
+            <div class="col-md-6">
+              <label for="produitFourni" class="form-label">Produit fourni</label>
+              <input type="text" class="form-control" id="produitFourni">
+            </div>
+
+            <div class="col-md-6">
+              <label for="prixProduit" class="form-label">Prix unitaire</label>
+              <input type="number" class="form-control" id="prixProduit">
+            </div>
+
+            <div class="col-md-6">
+              <label for="uniteProduit" class="form-label">Unité</label>
+              <select class="form-select" id="uniteProduit">
+                <option selected>Choisir...</option>
+                <option>kg</option>
+                <option>g</option>
+                <option>L</option>
+                <option>unité</option>
+              </select>
+            </div>
+          </div>
+        </form>        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Annuler
+          </button>
+          <button type="submit" class="btn btn-principal" onclick="">
+            <i class="bi bi-check-circle me-2"></i>
+            Modifier
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
