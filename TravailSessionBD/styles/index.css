@@ -1,0 +1,181 @@
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: #ffffff;
+      color: #223322;
+    }
+
+    /* Navbar */
+    .navbar {
+      background-color: #2f4f2f;
+    }
+
+    .navbar-brand,
+    .nav-link {
+      color: white;
+      font-weight: 500;
+    }
+
+    .nav-link:hover {
+      background-color: #5f7f4f;
+      color: white;
+      border-radius: 8px;
+    }
+
+    .navbar .nav-link.active {
+      color: #ffffff;
+      font-weight: 700;
+      background-color: rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+    }
+
+    .dropdown-item:hover {
+      background-color: #5f7f4f;
+      color: white;
+    }
+    
+    .hero {
+      background-color: #f7f4ed;
+      padding: 80px 0;
+      text-align: center;
+    }
+
+    .hero h1 {
+      color: #2f4f2f;
+      font-weight: 700;
+      font-size: 2.8rem;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      color: #666;
+    }
+
+    .btn-principal {
+      background-color: #2f4f2f;
+      color: white;
+      border: none;
+    }
+
+    .btn-principal:hover {
+      background-color: #5f7f4f;
+      color: white;
+    }
+
+    .btn-outline-principal {
+      border: 1px solid #2f4f2f;
+      color: #2f4f2f;
+    }
+
+    .btn-outline-principal:hover {
+      background-color: #2f4f2f;
+      color: white;
+    }
+
+    .feature-card {
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+      transition: transform 0.2s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .icon-circle {
+      width: 65px;
+      height: 65px;
+      background-color: #dfe8d2;
+      color: #2f4f2f;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+    }
+
+    .section-title {
+      color: #2f4f2f;
+      font-weight: 700;
+    }
+
+    .badge-preparation {
+      background-color: #f5d98b;
+      color: #5a4300;
+    }
+
+    .badge-confirmee {
+      background-color: #d8ead0;
+      color: #244d24;
+    }
+
+    .badge-expediee {
+      background-color: #d6e9f8;
+      color: #174469;
+    }
+
+    .badge-livree {
+      background-color: #dcebcf;
+      color: #2d4f1f;
+    }
+
+    @media (max-width: 768px) {
+      .hero {
+        padding: 50px 20px;
+      }
+
+      .hero h1 {
+        font-size: 2rem;
+      }
+
+      .hero p {
+        font-size: 1rem;
+      }
+
+      .hero .btn {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+
+      .table {
+        font-size: 0.85rem;
+      }
+    }
+    
+.footer-pro {
+  background-color: #223322;
+  color: #ffffff;
+  margin-top: 60px;
+}
+
+.footer-title {
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 12px;
+}
+
+.footer-subtitle {
+  font-weight: 700;
+  color: #dfe8d2;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+}
+
+.footer-text {
+  color: #d8ddd0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.footer-line {
+  border-color: rgba(255, 255, 255, 0.2);
+  margin: 25px 0 18px;
+}
+
+.footer-bottom {
+  color: #c8d0c0;
+  font-size: 0.9rem;
+}
