@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Production - Père Canuel</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link type="text/css" rel="stylesheet" href="styles/index.css"/>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html">
+        <i class="bi bi-basket2-fill me-2"></i>
+        La fermenterie du Père Canuel
+      </a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarMenu">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html">Accueil</a>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="produitsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Produits
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="produitsDropdown">
+              <li><a class="dropdown-item" href="produits-bruts.html">Produits bruts</a></li>
+              <li><a class="dropdown-item" href="produits-transformes.html">Produits transformés</a></li>
+            </ul>
+          </li>
+
+          <li class="nav-item"><a class="nav-link" href="fournisseurs.html">Fournisseurs</a></li>
+          <li class="nav-item"><a class="nav-link" href="clients.html">Clients</a></li>
+          <li class="nav-item"><a class="nav-link" href="commandes.html">Commandes</a></li>
+          <li class="nav-item"><a class="nav-link active" href="production.html">Production</a></li>
+          <li class="nav-item"><a class="nav-link" href="rapports.html">Rapports</a></li>
+
+          <li class="nav-item dropdown ms-lg-3">
+            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <span class="user-avatar me-2">
+                <i class="bi bi-person-fill"></i>
+              </span>
+              Admin
+            </a>
+
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+              <li>
+                <a class="dropdown-item" href="#">
+                  <i class="bi bi-person-circle me-2"></i>
+                  Mon profil
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="#">
+                  <i class="bi bi-gear me-2"></i>
+                  Paramètres
+                </a>
+              </li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <a class="dropdown-item text-danger" href="connexion.html">
+                  <i class="bi bi-box-arrow-right me-2"></i>
+                  Se déconnecter
+                </a>
+              </li>
+            </ul>
+          </li>
+
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <header class="page-header">
+    <div class="container">
+      <h1>Production planifiée</h1>
+      <p class="text-muted">Planification des productions et suivi des besoins en matières premières.</p>
+    </div>
+  </header>
+
+  <main class="container my-5">
+    <section class="mb-5">
+      <h2 class="section-title mb-4">Planifier une production</h2>
+
+      <div class="card shadow-sm p-4">
+        <form>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="produitProduction" class="form-label">Produit transformé</label>
+              <select class="form-select" id="produitProduction">
+                <option selected>Choisir...</option>
+                <option>Choucroute nature</option>
+                <option>Kimchi traditionnel</option>
+                <option>Tempeh de pois</option>
+                <option>Betteraves lacto-fermentées</option>
+              </select>
+            </div>
+
+            <div class="col-md-3">
+              <label for="quantitePlanifiee" class="form-label">Quantité planifiée</label>
+              <input type="number" class="form-control" id="quantitePlanifiee" placeholder="Ex. 100">
+            </div>
+
+            <div class="col-md-3">
+              <label for="uniteProduction" class="form-label">Unité</label>
+              <select class="form-select" id="uniteProduction">
+                <option selected>Choisir...</option>
+                <option>unités</option>
+                <option>pots</option>
+                <option>kg</option>
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label for="dateProduction" class="form-label">Date prévue</label>
+              <input type="date" class="form-control" id="dateProduction">
+            </div>
+
+            <div class="col-md-4">
+              <label for="dureePrevue" class="form-label">Durée prévue</label>
+              <input type="text" class="form-control" id="dureePrevue" placeholder="Ex. 4 h">
+            </div>
+
+            <div class="col-md-4">
+              <label for="tauxHoraire" class="form-label">Taux horaire</label>
+              <input type="number" class="form-control" id="tauxHoraire" placeholder="Ex. 22">
+            </div>
+
+            <div class="col-12">
+              <button type="submit" class="btn btn-principal">
+                <i class="bi bi-calendar-plus me-2"></i>
+                Planifier la production
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="mb-5">
+      <h2 class="section-title mb-4">Productions à venir</h2>
+
+      <div class="table-responsive">
+        <table class="table table-bordered align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Date prévue</th>
+              <th>Produit</th>
+              <th>Quantité</th>
+              <th>Durée prévue</th>
+              <th>Taux horaire</th>
+              <th>Statut</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>22 mai 2026</td>
+              <td>Choucroute nature</td>
+              <td>100 kg</td>
+              <td>5 h</td>
+              <td>22 $ / h</td>
+              <td><span class="badge bg-warning text-dark">Planifiée</span></td>
+            </tr>
+            <tr>
+              <td>24 mai 2026</td>
+              <td>Kimchi traditionnel</td>
+              <td>60 pots</td>
+              <td>4 h</td>
+              <td>22 $ / h</td>
+              <td><span class="badge bg-info text-dark">En préparation</span></td>
+            </tr>
+            <tr>
+              <td>27 mai 2026</td>
+              <td>Tempeh de pois</td>
+              <td>80 unités</td>
+              <td>6 h</td>
+              <td>22 $ / h</td>
+              <td><span class="badge bg-secondary">À venir</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title mb-4">Vue production-inventaire</h2>
+
+      <div class="alert alert-warning">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        Certains produits bruts peuvent être insuffisants pour les productions planifiées.
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-bordered align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Produit brut</th>
+              <th>Besoin prévu</th>
+              <th>Stock actuel</th>
+              <th>En commande</th>
+              <th>Situation</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>Pois jaunes</td>
+              <td>40 kg</td>
+              <td>25 kg</td>
+              <td>20 kg</td>
+              <td><span class="badge bg-success">Suffisant avec commande</span></td>
+            </tr>
+            <tr>
+              <td>Sel de mer</td>
+              <td>10 kg</td>
+              <td>5 kg</td>
+              <td>0 kg</td>
+              <td><span class="badge bg-danger">Manquant</span></td>
+            </tr>
+            <tr>
+              <td>Épices à choucroute</td>
+              <td>3 kg</td>
+              <td>2 kg</td>
+              <td>2 kg</td>
+              <td><span class="badge bg-warning text-dark">À surveiller</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer-pro">
+    <div class="container py-4">
+      <div class="row gy-4 align-items-center">
+
+        <div class="col-lg-5 col-md-12">
+          <h5 class="footer-title">
+            <i class="bi bi-basket2-fill me-2"></i>
+            La fermenterie du Père Canuel
+          </h5>
+          <p class="footer-text mb-0">
+            Système de gestion d’inventaire pour le suivi des produits,
+            des stocks, des commandes et de la production.
+          </p>
+        </div>
+
+        <div class="col-lg-4 col-md-12">
+          <h6 class="footer-subtitle">Contact</h6>
+          <p class="footer-text mb-2">
+            <i class="bi bi-envelope me-2"></i>
+            contact@perecanuel.com
+          </p>
+          <p class="footer-text mb-0">
+            <i class="bi bi-globe me-2"></i>
+            www.perecanuel.com
+          </p>
+        </div>
+
+        <div class="col-lg-3 col-md-12">
+          <h6 class="footer-subtitle">Adresse</h6>
+          <p class="footer-text mb-2">
+            <i class="bi bi-geo-alt me-2"></i>
+            Bas-Saint-Laurent, Québec
+          </p>
+          <p class="footer-text mb-0">
+            <i class="bi bi-telephone me-2"></i>
+            +1 418-555-1234
+          </p>
+        </div>
+
+      </div>
+
+      <hr class="footer-line">
+
+      <div class="text-center">
+        <p class="footer-bottom mb-1">
+          © 2026 La fermenterie du Père Canuel. Tous droits réservés.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
