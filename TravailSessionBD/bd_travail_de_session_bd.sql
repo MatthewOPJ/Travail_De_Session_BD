@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 03, 2026 at 10:14 PM
+-- Generation Time: May 03, 2026 at 10:55 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -40,6 +40,15 @@ CREATE TABLE `client` (
   `region` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `client`
+--
+
+INSERT INTO `client` (`id_client`, `nom`, `telephone`, `email`, `site_web`, `contact`, `type_client`, `adresse`, `ville`, `region`) VALUES
+(1, 'Épicerie du coin', '4184444444', 'contact@epicerie.ca', 'www.epicerie.ca', 'Paul Roy', 'épicerie', '123 rue Main', 'Rimouski', 'Bas-Saint-Laurent'),
+(2, 'Restaurant BonGoût', '4185555555', 'info@bongout.ca', 'www.bongout.ca', 'Julie Bouchard', 'restaurant', '456 rue Chef', 'Rimouski', 'Bas-Saint-Laurent'),
+(3, 'Client privé', '4186666666', 'client@mail.com', '', 'Marc Leblanc', 'particulier', '789 rue Perso', 'Rimouski', 'Bas-Saint-Laurent');
+
 -- --------------------------------------------------------
 
 --
@@ -57,6 +66,13 @@ CREATE TABLE `commandebrut` (
   `statut` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `commandebrut`
+--
+
+INSERT INTO `commandebrut` (`id_commande_brut`, `id_produit_brut`, `id_fournisseur`, `quantite`, `prix`, `date_commande`, `date_reception_prevue`, `statut`) VALUES
+(1, 1, 1, 30, 50, '2026-05-07', '2026-05-14', 'expédié');
+
 -- --------------------------------------------------------
 
 --
@@ -70,6 +86,13 @@ CREATE TABLE `commandeclient` (
   `date_reception_prevue` date DEFAULT NULL,
   `statut` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `commandeclient`
+--
+
+INSERT INTO `commandeclient` (`id_commande_client`, `id_client`, `date_commande`, `date_reception_prevue`, `statut`) VALUES
+(1, 2, '2026-05-03', '2026-05-10', 'expédié');
 
 -- --------------------------------------------------------
 
@@ -86,6 +109,15 @@ CREATE TABLE `fournisseur` (
   `personne_de_contact` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `fournisseur`
+--
+
+INSERT INTO `fournisseur` (`id_fournisseur`, `nom`, `telephone`, `email`, `site_web`, `personne_de_contact`) VALUES
+(1, 'AgriNord', '4181111111', 'contact@agrinord.ca', 'www.agrinord.ca', 'Jean Tremblay'),
+(2, 'SelPlus', '4182222222', 'info@selplus.ca', 'www.selplus.ca', 'Marie Gagnon'),
+(3, 'HydroSource', '4183333333', 'support@hydro.ca', 'www.hydro.ca', 'Luc Martin');
+
 -- --------------------------------------------------------
 
 --
@@ -98,6 +130,15 @@ CREATE TABLE `fournisseurproduit` (
   `prix_unitaire` float DEFAULT NULL,
   `unite_mesure` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `fournisseurproduit`
+--
+
+INSERT INTO `fournisseurproduit` (`id_fournisseur`, `id_produit_brut`, `prix_unitaire`, `unite_mesure`) VALUES
+(1, 1, 2.5, 'kg'),
+(2, 2, 0.8, 'kg'),
+(3, 3, 0.01, 'L');
 
 -- --------------------------------------------------------
 
@@ -112,6 +153,13 @@ CREATE TABLE `lignecommandeclient` (
   `quantite` int(11) DEFAULT NULL,
   `prix_vente` float DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `lignecommandeclient`
+--
+
+INSERT INTO `lignecommandeclient` (`id_ligne`, `id_commande_client`, `id_produit_transforme`, `quantite`, `prix_vente`) VALUES
+(1, 1, 1, 10, 8);
 
 -- --------------------------------------------------------
 
@@ -130,6 +178,14 @@ CREATE TABLE `productionplanifiee` (
   `taux_horaire` float DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `productionplanifiee`
+--
+
+INSERT INTO `productionplanifiee` (`id_production`, `id_produit_transforme`, `quantite`, `unite_mesure`, `date_prevue`, `duree_prevue`, `duree_reelle`, `taux_horaire`) VALUES
+(1, 2, 50, 'kg', '2026-05-07', 4, 5, 25),
+(2, 2, 50, 'kg', '2026-05-07', 4, 5, 25.5);
+
 -- --------------------------------------------------------
 
 --
@@ -144,6 +200,15 @@ CREATE TABLE `produitbrut` (
   `prix_unitaire_moyen` float DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `produitbrut`
+--
+
+INSERT INTO `produitbrut` (`id_produit_brut`, `nom`, `quantite_stock`, `unite_mesure`, `prix_unitaire_moyen`) VALUES
+(1, 'Pois jaunes', 100, 'kg', 2.5),
+(2, 'Sel', 50, 'kg', 0.8),
+(3, 'Eau', 1000, 'L', 0.01);
+
 -- --------------------------------------------------------
 
 --
@@ -157,6 +222,14 @@ CREATE TABLE `produittransforme` (
   `unite_mesure` varchar(50) DEFAULT NULL,
   `commentaire` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `produittransforme`
+--
+
+INSERT INTO `produittransforme` (`id_produit_transforme`, `nom`, `quantite_stock`, `unite_mesure`, `commentaire`) VALUES
+(1, 'Tofu nature', 100, 'kg', 'Produit de base'),
+(2, 'Tofu fumée', 80, 'kg', 'Goût fumé');
 
 -- --------------------------------------------------------
 
@@ -215,6 +288,13 @@ CREATE TABLE `recette` (
   `unite_mesure` varchar(50) DEFAULT NULL,
   `quantite_resultat` float DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `recette`
+--
+
+INSERT INTO `recette` (`id_produit_transforme`, `id_produit_brut`, `quantite`, `unite_mesure`, `quantite_resultat`) VALUES
+(1, 3, 20, 'kg', 20);
 
 -- --------------------------------------------------------
 
@@ -372,49 +452,49 @@ ALTER TABLE `recette`
 -- AUTO_INCREMENT for table `client`
 --
 ALTER TABLE `client`
-  MODIFY `id_client` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_client` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `commandebrut`
 --
 ALTER TABLE `commandebrut`
-  MODIFY `id_commande_brut` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_commande_brut` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `commandeclient`
 --
 ALTER TABLE `commandeclient`
-  MODIFY `id_commande_client` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_commande_client` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `fournisseur`
 --
 ALTER TABLE `fournisseur`
-  MODIFY `id_fournisseur` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_fournisseur` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `lignecommandeclient`
 --
 ALTER TABLE `lignecommandeclient`
-  MODIFY `id_ligne` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_ligne` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `productionplanifiee`
 --
 ALTER TABLE `productionplanifiee`
-  MODIFY `id_production` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_production` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `produitbrut`
 --
 ALTER TABLE `produitbrut`
-  MODIFY `id_produit_brut` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_produit_brut` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `produittransforme`
 --
 ALTER TABLE `produittransforme`
-  MODIFY `id_produit_transforme` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_produit_transforme` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Constraints for dumped tables
