@@ -149,7 +149,7 @@
           <p>
             Consultez et gérez les matières premières utilisées dans les recettes.
           </p>
-          <a href="produits-bruts.html" class="btn btn-sm btn-principal mt-auto">
+          <a href="produits-bruts.php" class="btn btn-sm btn-principal mt-auto">
             Accéder
           </a>
         </div>
@@ -164,7 +164,7 @@
           <p>
             Suivez les produits finis fabriqués et disponibles en inventaire.
           </p>
-          <a href="produits-transformes.html" class="btn btn-sm btn-principal mt-auto">
+          <a href="produits-transformes.php" class="btn btn-sm btn-principal mt-auto">
             Accéder
           </a>
         </div>
@@ -179,7 +179,7 @@
           <p>
             Créez, consultez et suivez les commandes des clients.
           </p>
-          <a href="commandes.html" class="btn btn-sm btn-principal mt-auto">
+          <a href="commandes.php" class="btn btn-sm btn-principal mt-auto">
             Accéder
           </a>
         </div>
