@@ -7,14 +7,18 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
   <link type="text/css" rel="stylesheet" href="styles/produits-bruts.css"/>
-  <?php require_once "liaisonBD.php"; ?>
+  <?php require_once "liaisonBD.php"; 
+  $sql = "SELECT * FROM produitbrut";
+  $stmt = $pdo->query($sql);
+  $produits_bruts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  ?>
 </head>
 
 <body>
 
   <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
-      <a class="navbar-brand fw-bold" href="index.html">
+      <a class="navbar-brand fw-bold" href="index.php">
         <i class="bi bi-basket2-fill me-2"></i>
         La fermenterie du Père Canuel
       </a>
@@ -27,7 +31,7 @@
         <ul class="navbar-nav ms-auto">
 
           <li class="nav-item">
-            <a class="nav-link" href="index.html">Accueil</a>
+            <a class="nav-link" href="index.php">Accueil</a>
           </li>
 
           <li class="nav-item dropdown">
@@ -38,13 +42,13 @@
 
             <ul class="dropdown-menu" aria-labelledby="produitsDropdown">
               <li>
-                <a class="dropdown-item" href="produits-bruts.html">
+                <a class="dropdown-item" href="produits-bruts.php">
                   Produits bruts
                 </a>
               </li>
 
               <li>
-                <a class="dropdown-item" href="produits-transformes.html">
+                <a class="dropdown-item" href="produits-transformes.php">
                   Produits transformés
                 </a>
               </li>
@@ -52,23 +56,23 @@
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="fournisseurs.html">Fournisseurs</a>
+            <a class="nav-link" href="fournisseurs.php">Fournisseurs</a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="clients.html">Clients</a>
+            <a class="nav-link" href="clients.php">Clients</a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="commandes.html">Commandes</a>
+            <a class="nav-link" href="commandes.php">Commandes</a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="production.html">Production</a>
+            <a class="nav-link" href="production.php">Production</a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="rapports.html">Rapports</a>
+            <a class="nav-link" href="rapports.php">Rapports</a>
           </li>
 
           <li class="nav-item dropdown ms-lg-3">
@@ -101,7 +105,7 @@
               </li>
 
               <li>
-                <a class="dropdown-item text-danger" href="connexion.html">
+                <a class="dropdown-item text-danger" href="connexion.php">
                   <i class="bi bi-box-arrow-right me-2"></i>
                   Se déconnecter
                 </a>
@@ -200,84 +204,28 @@
               <th>Quantité</th>
               <th>Unité</th>
               <th>Prix unitaire moyen</th>
-              <th>Fournisseur</th>
-              <th>Statut</th>
               <th>Actions</th>
             </tr>
           </thead>
 
           <tbody>
-            <tr>
-              <td>Pois jaunes</td>
-              <td>25</td>
-              <td>kg</td>
-              <td>3.50 $</td>
-              <td>Ferme du Bas-Saint-Laurent</td>
-              <td><span class="badge bg-success">Disponible</span></td>
-              <td>
-                <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modifierModal">
-                  <i class="bi bi-pencil-square"></i>
-                </button>
+            <?php foreach ($produits_bruts as $produit_brut): ?>
+              <tr>
+                <td><?= $produit_brut["nom"] ?></td>
+                <td><?= $produit_brut["quantite_stock"] ?></td>
+                <td><?= $produit_brut["unite_mesure"] ?></td>
+                <td><?= $produit_brut["prix_unitaire_moyen"] ?></td>
+                <td>
+                  <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modifierModal">
+                    <i class="bi bi-pencil-square"></i>
+                  </button>
 
-                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#supprimerModal">
-                  <i class="bi bi-trash"></i>
-                </button>
-              </td>
-
-            </tr>
-
-            <tr>
-              <td>Sel de mer</td>
-              <td>5</td>
-              <td>kg</td>
-              <td>2.20 $</td>
-              <td>Épices Québec</td>
-              <td><span class="badge bg-warning text-dark">Stock faible</span></td>
-              <td>
-                <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modifierModal">
-                  <i class="bi bi-pencil-square"></i>
-                </button>
-
-                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#supprimerModal">
-                  <i class="bi bi-trash"></i>
-                </button>
-            </tr>
-
-            <tr>
-              <td>Épices à choucroute</td>
-              <td>2</td>
-              <td>kg</td>
-              <td>8.75 $</td>
-              <td>Fournisseur régional</td>
-              <td><span class="badge bg-warning text-dark">Stock faible</span></td>
-              <td>
-                <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modifierModal">
-                  <i class="bi bi-pencil-square"></i>
-                </button>
-
-                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#supprimerModal">
-                  <i class="bi bi-trash"></i>
-                </button>
-              </td>
-            </tr>
-
-            <tr>
-              <td>Chou vert</td>
-              <td>0</td>
-              <td>kg</td>
-              <td>1.80 $</td>
-              <td>Producteur local</td>
-              <td><span class="badge bg-danger">Rupture</span></td>
-              <td>
-                <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modifierModal">
-                  <i class="bi bi-pencil-square"></i>
-                </button>
-
-                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#supprimerModal">
-                  <i class="bi bi-trash"></i>
-                </button>
-              </td>
-            </tr>
+                  <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#supprimerModal">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            <?php endforeach; ?>
           </tbody>
         </table>
       </div>

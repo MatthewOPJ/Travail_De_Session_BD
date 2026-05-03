@@ -13,7 +13,7 @@
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
-      <a class="navbar-brand fw-bold" href="index.html">
+      <a class="navbar-brand fw-bold" href="index.php">
         <i class="bi bi-basket2-fill me-2"></i>
         La fermenterie du Père Canuel
       </a>
@@ -25,7 +25,7 @@
       <div class="collapse navbar-collapse" id="navbarMenu">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item">
-            <a class="nav-link" href="index.html">Accueil</a>
+            <a class="nav-link" href="index.php">Accueil</a>
           </li>
 
           <li class="nav-item dropdown">
@@ -33,16 +33,16 @@
               Produits
             </a>
             <ul class="dropdown-menu" aria-labelledby="produitsDropdown">
-              <li><a class="dropdown-item" href="produits-bruts.html">Produits bruts</a></li>
-              <li><a class="dropdown-item" href="produits-transformes.html">Produits transformés</a></li>
+              <li><a class="dropdown-item" href="produits-bruts.php">Produits bruts</a></li>
+              <li><a class="dropdown-item" href="produits-transformes.php">Produits transformés</a></li>
             </ul>
           </li>
 
-          <li class="nav-item"><a class="nav-link" href="fournisseurs.html">Fournisseurs</a></li>
-          <li class="nav-item"><a class="nav-link" href="clients.html">Clients</a></li>
-          <li class="nav-item"><a class="nav-link" href="commandes.html">Commandes</a></li>
-          <li class="nav-item"><a class="nav-link active" href="production.html">Production</a></li>
-          <li class="nav-item"><a class="nav-link" href="rapports.html">Rapports</a></li>
+          <li class="nav-item"><a class="nav-link" href="fournisseurs.php">Fournisseurs</a></li>
+          <li class="nav-item"><a class="nav-link" href="clients.php">Clients</a></li>
+          <li class="nav-item"><a class="nav-link" href="commandes.php">Commandes</a></li>
+          <li class="nav-item"><a class="nav-link active" href="production.php">Production</a></li>
+          <li class="nav-item"><a class="nav-link" href="rapports.php">Rapports</a></li>
 
           <li class="nav-item dropdown ms-lg-3">
             <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -67,7 +67,7 @@
               </li>
               <li><hr class="dropdown-divider"></li>
               <li>
-                <a class="dropdown-item text-danger" href="connexion.html">
+                <a class="dropdown-item text-danger" href="connexion.php">
                   <i class="bi bi-box-arrow-right me-2"></i>
                   Se déconnecter
                 </a>

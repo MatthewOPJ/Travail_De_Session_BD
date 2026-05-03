@@ -14,7 +14,7 @@
   <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
 
-      <a class="navbar-brand fw-bold" href="index.html">
+      <a class="navbar-brand fw-bold" href="index.php">
         <i class="bi bi-basket2-fill me-2"></i>
         La fermenterie du Père Canuel
       </a>
@@ -69,7 +69,7 @@
           </label>
         </div>
 
-        <a href="index.html" class="btn btn-principal w-100">
+        <a href="index.php" class="btn btn-principal w-100">
           <i class="bi bi-box-arrow-in-right me-2"></i>
           Se connecter
         </a>
