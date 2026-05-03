@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Fournisseurs - Père Canuel</title>
+  <title>Production - Père Canuel</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-  <link type="text/css" rel="stylesheet" href="styles/fournisseurs.css"/>
-</head> 
+  <link type="text/css" rel="stylesheet" href="styles/index.css"/>
+  <?php require_once "liaisonBD.php"; ?>
+</head>
 
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark">
@@ -37,10 +38,10 @@
             </ul>
           </li>
 
-          <li class="nav-item"><a class="nav-link active" href="fournisseurs.html">Fournisseurs</a></li>
+          <li class="nav-item"><a class="nav-link" href="fournisseurs.html">Fournisseurs</a></li>
           <li class="nav-item"><a class="nav-link" href="clients.html">Clients</a></li>
           <li class="nav-item"><a class="nav-link" href="commandes.html">Commandes</a></li>
-          <li class="nav-item"><a class="nav-link" href="production.html">Production</a></li>
+          <li class="nav-item"><a class="nav-link active" href="production.html">Production</a></li>
           <li class="nav-item"><a class="nav-link" href="rapports.html">Rapports</a></li>
 
           <li class="nav-item dropdown ms-lg-3">
@@ -81,67 +82,63 @@
 
   <header class="page-header">
     <div class="container">
-      <h1>Gestion des fournisseurs</h1>
-      <p class="text-muted">Suivi des fournisseurs et des produits bruts fournis à l’entreprise.</p>
+      <h1>Production planifiée</h1>
+      <p class="text-muted">Planification des productions et suivi des besoins en matières premières.</p>
     </div>
   </header>
 
   <main class="container my-5">
     <section class="mb-5">
-      <h2 class="section-title mb-4">Ajouter un fournisseur</h2>
+      <h2 class="section-title mb-4">Planifier une production</h2>
+
       <div class="card shadow-sm p-4">
         <form>
           <div class="row g-3">
             <div class="col-md-6">
-              <label for="nomFournisseur" class="form-label">Nom du fournisseur</label>
-              <input type="text" class="form-control" id="nomFournisseur" placeholder="Ex. Ferme du Bas-Saint-Laurent">
-            </div>
-
-            <div class="col-md-6">
-              <label for="contactFournisseur" class="form-label">Personne contact</label>
-              <input type="text" class="form-control" id="contactFournisseur" placeholder="Ex. Jean Gagnon">
-            </div>
-
-            <div class="col-md-6">
-              <label for="telephoneFournisseur" class="form-label">Téléphone</label>
-              <input type="text" class="form-control" id="telephoneFournisseur" placeholder="Ex. 418-555-1234">
-            </div>
-
-            <div class="col-md-6">
-              <label for="courrielFournisseur" class="form-label">Courriel</label>
-              <input type="email" class="form-control" id="courrielFournisseur" placeholder="fournisseur@email.com">
-            </div>
-
-            <div class="col-md-6">
-              <label for="siteFournisseur" class="form-label">Site web</label>
-              <input type="text" class="form-control" id="siteFournisseur" placeholder="www.fournisseur.ca">
-            </div>
-
-            <div class="col-md-6">
-              <label for="produitFourni" class="form-label">Produit fourni</label>
-              <input type="text" class="form-control" id="produitFourni" placeholder="Ex. Pois jaunes">
-            </div>
-
-            <div class="col-md-6">
-              <label for="prixProduit" class="form-label">Prix unitaire</label>
-              <input type="number" class="form-control" id="prixProduit" placeholder="Ex. 3.50">
-            </div>
-
-            <div class="col-md-6">
-              <label for="uniteProduit" class="form-label">Unité</label>
-              <select class="form-select" id="uniteProduit">
+              <label for="produitProduction" class="form-label">Produit transformé</label>
+              <select class="form-select" id="produitProduction">
                 <option selected>Choisir...</option>
-                <option>kg</option>
-                <option>g</option>
-                <option>L</option>
-                <option>unité</option>
+                <option>Choucroute nature</option>
+                <option>Kimchi traditionnel</option>
+                <option>Tempeh de pois</option>
+                <option>Betteraves lacto-fermentées</option>
               </select>
+            </div>
+
+            <div class="col-md-3">
+              <label for="quantitePlanifiee" class="form-label">Quantité planifiée</label>
+              <input type="number" class="form-control" id="quantitePlanifiee" placeholder="Ex. 100">
+            </div>
+
+            <div class="col-md-3">
+              <label for="uniteProduction" class="form-label">Unité</label>
+              <select class="form-select" id="uniteProduction">
+                <option selected>Choisir...</option>
+                <option>unités</option>
+                <option>pots</option>
+                <option>kg</option>
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label for="dateProduction" class="form-label">Date prévue</label>
+              <input type="date" class="form-control" id="dateProduction">
+            </div>
+
+            <div class="col-md-4">
+              <label for="dureePrevue" class="form-label">Durée prévue</label>
+              <input type="text" class="form-control" id="dureePrevue" placeholder="Ex. 4 h">
+            </div>
+
+            <div class="col-md-4">
+              <label for="tauxHoraire" class="form-label">Taux horaire</label>
+              <input type="number" class="form-control" id="tauxHoraire" placeholder="Ex. 22">
             </div>
 
             <div class="col-12">
               <button type="submit" class="btn btn-principal">
-                <i class="bi bi-plus-circle me-2"></i>
-                Ajouter le fournisseur
+                <i class="bi bi-calendar-plus me-2"></i>
+                Planifier la production
               </button>
             </div>
           </div>
@@ -149,90 +146,121 @@
       </div>
     </section>
 
-    <section>
-      <h2 class="section-title mb-4">Liste des fournisseurs</h2>
+    <section class="mb-5">
+      <h2 class="section-title mb-4">Productions à venir</h2>
+
       <div class="table-responsive">
         <table class="table table-bordered align-middle">
           <thead class="table-light">
             <tr>
-              <th>Nom</th>
-              <th>Contact</th>
-              <th>Téléphone</th>
-              <th>Courriel</th>
-              <th>Produit fourni</th>
-              <th>Prix</th>
+              <th>Date prévue</th>
+              <th>Produit</th>
+              <th>Quantité</th>
+              <th>Durée prévue</th>
+              <th>Taux horaire</th>
+              <th>Statut</th>
               <th>Actions</th>
             </tr>
           </thead>
 
           <tbody>
             <tr>
-              <td>Ferme du Bas-Saint-Laurent</td>
-              <td>Jean Gagnon</td>
-              <td>418-555-1234</td>
-              <td>contact@fermebsl.ca</td>
+              <td>22 mai 2026</td>
+              <td>Choucroute nature</td>
+              <td>100 kg</td>
+              <td>5 h</td>
+              <td>22 $ / h</td>
+              <td><span class="badge bg-warning text-dark">Planifiée</span></td>
+              <td>
+                <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modifierModal">
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+
+                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#supprimerModal">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>24 mai 2026</td>
+              <td>Kimchi traditionnel</td>
+              <td>60 pots</td>
+              <td>4 h</td>
+              <td>22 $ / h</td>
+              <td><span class="badge bg-info text-dark">En préparation</span></td>
+              <td>
+                <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modifierModal">
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+
+                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#supprimerModal">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>27 mai 2026</td>
+              <td>Tempeh de pois</td>
+              <td>80 unités</td>
+              <td>6 h</td>
+              <td>22 $ / h</td>
+              <td><span class="badge bg-secondary">À venir</span></td>
+              <td>
+                <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modifierModal">
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+
+                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#supprimerModal">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title mb-4">Vue production-inventaire</h2>
+
+      <div class="alert alert-warning">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        Certains produits bruts peuvent être insuffisants pour les productions planifiées.
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-bordered align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Produit brut</th>
+              <th>Besoin prévu</th>
+              <th>Stock actuel</th>
+              <th>En commande</th>
+              <th>Situation</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
               <td>Pois jaunes</td>
-              <td>3.50 $ / kg</td>
-              <td>
-                <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modifierModal">
-                  <i class="bi bi-pencil-square"></i>
-                </button>
-
-                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#supprimerModal">
-                  <i class="bi bi-trash"></i>
-                </button>
-              </td>
+              <td>40 kg</td>
+              <td>25 kg</td>
+              <td>20 kg</td>
+              <td><span class="badge bg-success">Suffisant avec commande</span></td>
             </tr>
             <tr>
-              <td>Épices Québec</td>
-              <td>Sophie Morin</td>
-              <td>418-555-9876</td>
-              <td>info@epicesquebec.ca</td>
               <td>Sel de mer</td>
-              <td>2.20 $ / kg</td>
-              <td>
-                <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modifierModal">
-                  <i class="bi bi-pencil-square"></i>
-                </button>
-
-                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#supprimerModal">
-                  <i class="bi bi-trash"></i>
-                </button>
-              </td>
+              <td>10 kg</td>
+              <td>5 kg</td>
+              <td>0 kg</td>
+              <td><span class="badge bg-danger">Manquant</span></td>
             </tr>
             <tr>
-              <td>Producteur local</td>
-              <td>Marc Bélanger</td>
-              <td>418-555-4500</td>
-              <td>vente@producteurlocal.ca</td>
-              <td>Chou vert</td>
-              <td>1.80 $ / kg</td>
-              <td>
-                <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modifierModal">
-                  <i class="bi bi-pencil-square"></i>
-                </button>
-
-                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#supprimerModal">
-                  <i class="bi bi-trash"></i>
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>Fournisseur régional</td>
-              <td>Anne Pelletier</td>
-              <td>418-555-7800</td>
-              <td>contact@regional.ca</td>
               <td>Épices à choucroute</td>
-              <td>8.75 $ / kg</td>
-              <td>
-                <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modifierModal">
-                  <i class="bi bi-pencil-square"></i>
-                </button>
-
-                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#supprimerModal">
-                  <i class="bi bi-trash"></i>
-                </button>
-              </td>
+              <td>3 kg</td>
+              <td>2 kg</td>
+              <td>2 kg</td>
+              <td><span class="badge bg-warning text-dark">À surveiller</span></td>
             </tr>
           </tbody>
         </table>
@@ -278,9 +306,11 @@
             +1 418-555-1234
           </p>
         </div>
+
       </div>
 
       <hr class="footer-line">
+
       <div class="text-center">
         <p class="footer-bottom mb-1">
           © 2026 La fermenterie du Père Canuel. Tous droits réservés.
@@ -289,7 +319,6 @@
     </div>
   </footer>
 
-  <!-- Ça c'est le modal de modification fournisseur d'accord Mr Beaulieu hahaha-->
   <div class="modal fade" id="modifierModal" tabindex="-1" aria-labelledby="modifierModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
@@ -357,20 +386,6 @@
             <i class="bi bi-check-circle me-2"></i>
             Modifier
           </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!--Modal de confirmation de suppression -->
-  <div class="modal fade" id="supprimerModal" tabindex="-1">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header"><h5 class="modal-title">Confirmation</h5></div>
-        <div class="modal-body">Supprimer ce client ?</div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-          <button type="button" class="btn btn-danger">Supprimer</button>
         </div>
       </div>
     </div>

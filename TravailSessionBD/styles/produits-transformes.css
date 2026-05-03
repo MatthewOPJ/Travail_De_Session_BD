@@ -58,6 +58,10 @@
       border: none;
     }
 
+    .actions-cell {
+      padding: 0%;
+    }
+
     .footer-pro {
       background-color: #223322;
       color: #ffffff;
