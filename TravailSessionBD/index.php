@@ -124,11 +124,6 @@
       </p>
 
       <div class="mt-4">
-        <a href="produits.php" class="btn btn-principal btn-lg me-md-3">
-          <i class="bi bi-box-seam me-2"></i>
-          Voir les produits
-        </a>
-
         <a href="commandes.php" class="btn btn-outline-principal btn-lg">
           <i class="bi bi-cart-plus me-2"></i>
           Nouvelle commande
