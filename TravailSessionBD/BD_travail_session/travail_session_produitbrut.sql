@@ -31,7 +31,7 @@ CREATE TABLE `produitbrut` (
   `unite_mesure` varchar(50) DEFAULT NULL,
   `prix_unitaire_moyen` float DEFAULT NULL,
   PRIMARY KEY (`id_produit_brut`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,6 +40,7 @@ CREATE TABLE `produitbrut` (
 
 LOCK TABLES `produitbrut` WRITE;
 /*!40000 ALTER TABLE `produitbrut` DISABLE KEYS */;
+INSERT INTO `produitbrut` VALUES (1,'Oeux',20,'g',0.49);
 /*!40000 ALTER TABLE `produitbrut` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -52,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-29 18:49:35
+-- Dump completed on 2026-05-03 15:48:46
