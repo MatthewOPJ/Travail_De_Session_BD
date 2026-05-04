@@ -220,7 +220,7 @@ CREATE TABLE `produittransforme` (
   `nom` varchar(100) DEFAULT NULL,
   `quantite_stock` float DEFAULT NULL,
   `unite_mesure` varchar(50) DEFAULT NULL,
-  `prix_unitaire_moyen` float DEFAULT NULL
+  `prix_unitaire_moyen` float DEFAULT NULL,
   `commentaire` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
