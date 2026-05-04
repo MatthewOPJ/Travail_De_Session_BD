@@ -19,9 +19,9 @@ $message = "";
 $messageErreur = "";
 
 try {
-    /* =========================
-       Ajouter une production
-       ========================= */
+    
+      //  Ajouter une production
+      
     if (isset($_POST['ajouter'])) {
         $idProduit = $_POST['id_produit_transforme'];
         $quantite = $_POST['quantite'];
@@ -52,9 +52,9 @@ try {
         }
     }
 
-    /* =========================
-       Modifier une production
-       ========================= */
+   
+      //  Modifier une production
+     
     if (isset($_POST['modifier'])) {
         $idProduction = $_POST['id_production'];
         $idProduit = $_POST['id_produit_transforme'];
@@ -87,9 +87,9 @@ try {
         $message = "Production modifiée avec succès.";
     }
 
-    /* =========================
-       Supprimer une production
-       ========================= */
+   
+      //  Supprimer une production
+     
     if (isset($_POST['supprimer'])) {
         $idProduction = $_POST['id_production'];
 
@@ -100,9 +100,9 @@ try {
         $message = "Production supprimée avec succès.";
     }
 
-    /* =========================
-       Liste des produits transformés
-       ========================= */
+    
+      //  Liste des produits transformés
+       
     $sqlProduits = "SELECT id_produit_transforme, nom, unite_mesure
                     FROM produittransforme
                     ORDER BY nom";
@@ -110,9 +110,9 @@ try {
     $requete->execute();
     $produitsTransformes = $requete->fetchAll(PDO::FETCH_ASSOC);
 
-    /* =========================
-       Liste des productions planifiées
-       ========================= */
+  
+      //  Liste des productions planifiées
+      
     $sqlProductions = "SELECT pp.id_production,
                               pp.id_produit_transforme,
                               pp.quantite,
@@ -130,9 +130,9 @@ try {
     $requete->execute();
     $productions = $requete->fetchAll(PDO::FETCH_ASSOC);
 
-    /* =========================
-       Besoins en produits bruts
-       ========================= */
+   
+      //  Besoins en produits bruts
+     
     $sqlInventaire = "SELECT pb.id_produit_brut,
                              pb.nom AS produit_brut,
                              pb.unite_mesure,
@@ -151,9 +151,9 @@ try {
     $requete->execute();
     $inventaire = $requete->fetchAll(PDO::FETCH_ASSOC);
 
-    /* =========================
-       Produits bruts en commande
-       ========================= */
+   
+      //  Produits bruts en commande
+
     $sqlCommandes = "SELECT id_produit_brut, IFNULL(SUM(quantite), 0) AS quantite_commandee
                      FROM commandebrut
                      WHERE statut != 'reçu'
@@ -169,9 +169,7 @@ try {
         $produitsEnCommande[$commande['id_produit_brut']] = $commande['quantite_commandee'];
     }
 
-    /* =========================
-       Vérification des manques
-       ========================= */
+    //  Vérification des manques
     $ilYAManque = false;
 
     foreach ($inventaire as $ligne) {

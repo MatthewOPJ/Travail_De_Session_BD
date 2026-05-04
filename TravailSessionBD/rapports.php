@@ -46,21 +46,17 @@ $profitTotal = 0;
 
 $messageErreur = '';
 
-try
-{
-    // 1. Rapport des ventes
+try {
 
     $conditionVentes = " WHERE 1=1 ";
     $paramsVentes = [];
 
-    if($dateDebut != '')
-    {
+    if ($dateDebut != '') {
         $conditionVentes .= " AND cc.date_commande >= :dateDebut ";
         $paramsVentes['dateDebut'] = $dateDebut;
     }
 
-    if($dateFin != '')
-    {
+    if ($dateFin != '') {
         $conditionVentes .= " AND cc.date_commande <= :dateFin ";
         $paramsVentes['dateFin'] = $dateFin;
     }
@@ -71,23 +67,13 @@ try
             pt.unite_mesure,
             SUM(lcc.quantite) AS quantite_vendue,
             SUM(lcc.quantite * lcc.prix_vente) AS produit_ventes,
-            SUM(lcc.quantite * IFNULL(cout.cout_unitaire, 0)) AS cout_estime,
-            SUM(lcc.quantite * lcc.prix_vente) - SUM(lcc.quantite * IFNULL(cout.cout_unitaire, 0)) AS profit_estime
+            SUM(lcc.quantite * pt.prix_unitaire_moyen) AS cout_estime,
+            SUM(lcc.quantite * lcc.prix_vente) - SUM(lcc.quantite * pt.prix_unitaire_moyen) AS profit_estime
         FROM lignecommandeclient lcc
         INNER JOIN commandeclient cc
             ON lcc.id_commande_client = cc.id_commande_client
         INNER JOIN produittransforme pt
             ON lcc.id_produit_transforme = pt.id_produit_transforme
-        LEFT JOIN (
-            SELECT
-                r.id_produit_transforme,
-                SUM(r.quantite * pb.prix_unitaire_moyen) AS cout_unitaire
-            FROM recette r
-            INNER JOIN produitbrut pb
-                ON r.id_produit_brut = pb.id_produit_brut
-            GROUP BY r.id_produit_transforme
-        ) cout
-            ON pt.id_produit_transforme = cout.id_produit_transforme
         $conditionVentes
         GROUP BY pt.id_produit_transforme, pt.nom, pt.unite_mesure
         ORDER BY produit_ventes DESC
@@ -97,27 +83,23 @@ try
     $requete->execute($paramsVentes);
     $ventes = $requete->fetchAll(PDO::FETCH_ASSOC);
 
-    foreach($ventes as $ligne)
-    {
+    foreach ($ventes as $ligne) {
         $ventesTotales += $ligne['produit_ventes'];
         $profitTotal += $ligne['profit_estime'];
     }
 
-    /* =========================
-       2. Rapport des coûts
-       ========================= */
+    
+      //  Rapport des coûts
 
     $conditionProduction = " WHERE 1=1 ";
     $paramsProduction = [];
 
-    if($dateDebut != '')
-    {
+    if ($dateDebut != '') {
         $conditionProduction .= " AND pp.date_prevue >= :dateDebut ";
         $paramsProduction['dateDebut'] = $dateDebut;
     }
 
-    if($dateFin != '')
-    {
+    if ($dateFin != '') {
         $conditionProduction .= " AND pp.date_prevue <= :dateFin ";
         $paramsProduction['dateFin'] = $dateFin;
     }
@@ -128,9 +110,9 @@ try
             pt.nom AS produit,
             pp.quantite,
             pp.unite_mesure,
-            IFNULL(SUM(r.quantite * pp.quantite * pb.prix_unitaire_moyen), 0) AS cout_matieres,
-            IFNULL(pp.duree_reelle, 0) * IFNULL(pp.taux_horaire, 0) AS cout_main_oeuvre,
-            IFNULL(SUM(r.quantite * pp.quantite * pb.prix_unitaire_moyen), 0) + (IFNULL(pp.duree_reelle, 0) * IFNULL(pp.taux_horaire, 0)) AS cout_total
+            SUM(r.quantite * pb.prix_unitaire_moyen) AS cout_matieres,
+            pp.duree_reelle * pp.taux_horaire AS cout_main_oeuvre,
+            SUM(r.quantite * pb.prix_unitaire_moyen) + (pp.duree_reelle * pp.taux_horaire) AS cout_total
         FROM productionplanifiee pp
         INNER JOIN produittransforme pt
             ON pp.id_produit_transforme = pt.id_produit_transforme
@@ -147,14 +129,13 @@ try
     $requete->execute($paramsProduction);
     $coutsProduction = $requete->fetchAll(PDO::FETCH_ASSOC);
 
-    foreach($coutsProduction as $ligne)
-    {
+    foreach ($coutsProduction as $ligne) {
         $coutsTotaux += $ligne['cout_total'];
     }
 
-    /* =========================
-       3. Rapport de consommation
-       ========================= */
+    
+        // Rapport de consommation
+     
 
     $sqlConsommation = "
         SELECT
@@ -177,13 +158,10 @@ try
     $requete->execute($paramsProduction);
     $consommations = $requete->fetchAll(PDO::FETCH_ASSOC);
 
-}
-catch(PDOException $e)
-{
+} catch (PDOException $e) {
     $messageErreur = $e->getMessage();
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -326,7 +304,7 @@ catch(PDOException $e)
       </div>
     </section>
 
-    <?php if($afficherVentes): ?>
+    <?php if ($afficherVentes): ?>
     <section class="mb-5">
       <h2 class="section-title mb-4">Rapport des ventes par produit</h2>
 
@@ -343,20 +321,20 @@ catch(PDOException $e)
           </thead>
 
           <tbody>
-            <?php if(count($ventes) == 0): ?>
+            <?php if (count($ventes) == 0): ?>
               <tr>
                 <td colspan="5" class="text-center text-muted">Aucune vente trouvée.</td>
               </tr>
             <?php endif; ?>
 
-            <?php foreach($ventes as $vente): ?>
+            <?php foreach ($ventes as $vente): ?>
               <tr>
                 <td><?= htmlspecialchars($vente['produit']) ?></td>
                 <td><?= number_format($vente['quantite_vendue'], 2, ',', ' ') ?> <?= htmlspecialchars($vente['unite_mesure']) ?></td>
                 <td><?= number_format($vente['produit_ventes'], 2, ',', ' ') ?> $</td>
                 <td><?= number_format($vente['cout_estime'], 2, ',', ' ') ?> $</td>
                 <td>
-                  <?php if($vente['profit_estime'] >= 0): ?>
+                  <?php if ($vente['profit_estime'] >= 0): ?>
                     <span class="badge bg-success"><?= number_format($vente['profit_estime'], 2, ',', ' ') ?> $</span>
                   <?php else: ?>
                     <span class="badge bg-danger"><?= number_format($vente['profit_estime'], 2, ',', ' ') ?> $</span>
@@ -370,7 +348,7 @@ catch(PDOException $e)
     </section>
     <?php endif; ?>
 
-    <?php if($afficherCouts): ?>
+    <?php if ($afficherCouts): ?>
     <section class="mb-5">
       <h2 class="section-title mb-4">Rapport des coûts de production</h2>
 
@@ -388,13 +366,13 @@ catch(PDOException $e)
           </thead>
 
           <tbody>
-            <?php if(count($coutsProduction) == 0): ?>
+            <?php if (count($coutsProduction) == 0): ?>
               <tr>
                 <td colspan="6" class="text-center text-muted">Aucune production trouvée.</td>
               </tr>
             <?php endif; ?>
 
-            <?php foreach($coutsProduction as $cout): ?>
+            <?php foreach ($coutsProduction as $cout): ?>
               <tr>
                 <td><?= htmlspecialchars($cout['date_prevue']) ?></td>
                 <td><?= htmlspecialchars($cout['produit']) ?></td>
@@ -410,7 +388,7 @@ catch(PDOException $e)
     </section>
     <?php endif; ?>
 
-    <?php if($afficherConsommation): ?>
+    <?php if ($afficherConsommation): ?>
     <section>
       <h2 class="section-title mb-4">Consommation des produits bruts</h2>
 
@@ -426,30 +404,25 @@ catch(PDOException $e)
           </thead>
 
           <tbody>
-            <?php if(count($consommations) == 0): ?>
+            <?php if (count($consommations) == 0): ?>
               <tr>
                 <td colspan="4" class="text-center text-muted">Aucune consommation trouvée.</td>
               </tr>
             <?php endif; ?>
 
-            <?php foreach($consommations as $consommation): ?>
+            <?php foreach ($consommations as $consommation): ?>
               <?php
                 $quantiteUtilisee = $consommation['quantite_utilisee'];
                 $moyenne = $consommation['moyenne_mensuelle'];
                 $stock = $consommation['quantite_stock'];
 
-                if($quantiteUtilisee == 0)
-                {
+                if ($quantiteUtilisee == 0) {
                     $tendance = "Aucune donnée";
                     $couleur = "bg-secondary";
-                }
-                elseif($stock < $quantiteUtilisee)
-                {
+                } elseif ($stock < $quantiteUtilisee) {
                     $tendance = "À surveiller";
                     $couleur = "bg-warning text-dark";
-                }
-                else
-                {
+                } else {
                     $tendance = "Stable";
                     $couleur = "bg-success";
                 }
