@@ -1,3 +1,80 @@
+<?php
+require_once "liaisonBD.php";
+
+function e($value) {
+  return htmlspecialchars($value ?? "", ENT_QUOTES, "UTF-8");
+}
+
+/* AJOUTER */
+if (isset($_POST["ajouter"])) {
+  $sql = "INSERT INTO production 
+          (id_produit_transforme, quantite, unite_mesure, date_prevue, duree_prevue, duree_reelle, taux_horaire)
+          VALUES (:id_produit_transforme, :quantite, :unite_mesure, :date_prevue, :duree_prevue, :duree_reelle, :taux_horaire)";
+
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute([
+    ":id_produit_transforme" => $_POST["id_produit_transforme"],
+    ":quantite" => $_POST["quantite"],
+    ":unite_mesure" => $_POST["unite_mesure"],
+    ":date_prevue" => $_POST["date_prevue"],
+    ":duree_prevue" => $_POST["duree_prevue"],
+    ":duree_reelle" => $_POST["duree_reelle"],
+    ":taux_horaire" => $_POST["taux_horaire"]
+  ]);
+
+  header("Location: " . $_SERVER["PHP_SELF"]);
+  exit;
+}
+
+/* MODIFIER */
+if (isset($_POST["modifier"])) {
+  $sql = "UPDATE production
+          SET id_produit_transforme = :id_produit_transforme,
+              quantite = :quantite,
+              unite_mesure = :unite_mesure,
+              date_prevue = :date_prevue,
+              duree_prevue = :duree_prevue,
+              duree_reelle = :duree_reelle,
+              taux_horaire = :taux_horaire
+          WHERE id_production = :id_production";
+
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute([
+    ":id_produit_transforme" => $_POST["id_produit_transforme"],
+    ":quantite" => $_POST["quantite"],
+    ":unite_mesure" => $_POST["unite_mesure"],
+    ":date_prevue" => $_POST["date_prevue"],
+    ":duree_prevue" => $_POST["duree_prevue"],
+    ":duree_reelle" => $_POST["duree_reelle"],
+    ":taux_horaire" => $_POST["taux_horaire"],
+    ":id_production" => $_POST["id_production"]
+  ]);
+
+  header("Location: " . $_SERVER["PHP_SELF"]);
+  exit;
+}
+
+/* SUPPRIMER */
+if (isset($_POST["supprimer"])) {
+  $sql = "DELETE FROM production WHERE id_production = :id_production";
+
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute([
+    ":id_production" => $_POST["id_production"]
+  ]);
+
+  header("Location: " . $_SERVER["PHP_SELF"]);
+  exit;
+}
+
+/* LISTE PRODUITS TRANSFORMÉS */
+$sqlProduits = "SELECT id_produit_transforme, nom FROM produittransforme ORDER BY nom";
+$stmtProduits = $pdo->query($sqlProduits);
+$produits_transformes = $stmtProduits->fetchAll(PDO::FETCH_ASSOC);
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -7,7 +84,6 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
   <link type="text/css" rel="stylesheet" href="styles/index.css"/>
-  <?php require_once "liaisonBD.php"; ?>
 </head>
 
 <body>
@@ -92,51 +168,58 @@
       <h2 class="section-title mb-4">Planifier une production</h2>
 
       <div class="card shadow-sm p-4">
-        <form>
+        <form method="POST">
           <div class="row g-3">
             <div class="col-md-6">
-              <label for="produitProduction" class="form-label">Produit transformé</label>
-              <select class="form-select" id="produitProduction">
-                <option selected>Choisir...</option>
-                <option>Choucroute nature</option>
-                <option>Kimchi traditionnel</option>
-                <option>Tempeh de pois</option>
-                <option>Betteraves lacto-fermentées</option>
+              <label class="form-label">Produit transformé</label>
+              <select class="form-select" name="id_produit_transforme" required>
+                <option value="">Choisir...</option>
+                <?php foreach ($produits_transformes as $produit): ?>
+                  <option value="<?= e($produit["id_produit_transforme"]) ?>">
+                    <?= e($produit["nom"]) ?>
+                  </option>
+                <?php endforeach; ?>
               </select>
             </div>
 
             <div class="col-md-3">
-              <label for="quantitePlanifiee" class="form-label">Quantité planifiée</label>
-              <input type="number" class="form-control" id="quantitePlanifiee" placeholder="Ex. 100">
+              <label class="form-label">Quantité planifiée</label>
+              <input type="number" class="form-control" name="quantite" placeholder="Ex. 100" required>
             </div>
 
             <div class="col-md-3">
-              <label for="uniteProduction" class="form-label">Unité</label>
-              <select class="form-select" id="uniteProduction">
-                <option selected>Choisir...</option>
-                <option>unités</option>
-                <option>pots</option>
-                <option>kg</option>
+              <label class="form-label">Unité</label>
+              <select class="form-select" name="unite_mesure" required>
+                <option value="">Choisir...</option>
+                <option value="unités">unités</option>
+                <option value="pots">pots</option>
+                <option value="kg">kg</option>
+                <option value="L">L</option>
               </select>
             </div>
 
-            <div class="col-md-4">
-              <label for="dateProduction" class="form-label">Date prévue</label>
-              <input type="date" class="form-control" id="dateProduction">
+            <div class="col-md-3">
+              <label class="form-label">Date prévue</label>
+              <input type="date" class="form-control" name="date_prevue">
             </div>
 
-            <div class="col-md-4">
-              <label for="dureePrevue" class="form-label">Durée prévue</label>
-              <input type="text" class="form-control" id="dureePrevue" placeholder="Ex. 4 h">
+            <div class="col-md-3">
+              <label class="form-label">Durée prévue</label>
+              <input type="number" step="0.01" class="form-control" name="duree_prevue" placeholder="Ex. 4">
             </div>
 
-            <div class="col-md-4">
-              <label for="tauxHoraire" class="form-label">Taux horaire</label>
-              <input type="number" class="form-control" id="tauxHoraire" placeholder="Ex. 22">
+            <div class="col-md-3">
+              <label class="form-label">Durée réelle</label>
+              <input type="number" step="0.01" class="form-control" name="duree_reelle" placeholder="Ex. 4.5">
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label">Taux horaire</label>
+              <input type="number" step="0.01" class="form-control" name="taux_horaire" placeholder="Ex. 22">
             </div>
 
             <div class="col-12">
-              <button type="submit" class="btn btn-principal">
+              <button type="submit" name="ajouter" class="btn btn-principal">
                 <i class="bi bi-calendar-plus me-2"></i>
                 Planifier la production
               </button>
@@ -156,112 +239,55 @@
               <th>Date prévue</th>
               <th>Produit</th>
               <th>Quantité</th>
+              <th>Unité</th>
               <th>Durée prévue</th>
+              <th>Durée réelle</th>
               <th>Taux horaire</th>
-              <th>Statut</th>
               <th>Actions</th>
             </tr>
           </thead>
 
           <tbody>
-            <tr>
-              <td>22 mai 2026</td>
-              <td>Choucroute nature</td>
-              <td>100 kg</td>
-              <td>5 h</td>
-              <td>22 $ / h</td>
-              <td><span class="badge bg-warning text-dark">Planifiée</span></td>
-              <td>
-                <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modifierModal">
-                  <i class="bi bi-pencil-square"></i>
-                </button>
+            <?php foreach ($productions as $production): ?>
+              <tr>
+                <td><?= e($production["date_prevue"]) ?></td>
+                <td><?= e($production["nom_produit"]) ?></td>
+                <td><?= e($production["quantite"]) ?></td>
+                <td><?= e($production["unite_mesure"]) ?></td>
+                <td><?= e($production["duree_prevue"]) ?> h</td>
+                <td><?= e($production["duree_reelle"]) ?> h</td>
+                <td><?= e($production["taux_horaire"]) ?> $ / h</td>
+                <td>
+                  <button 
+                    type="button"
+                    class="btn btn-sm btn-warning me-1"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modifierModal"
+                    data-id="<?= e($production["id_production"]) ?>"
+                    data-produit="<?= e($production["id_produit_transforme"]) ?>"
+                    data-quantite="<?= e($production["quantite"]) ?>"
+                    data-unite="<?= e($production["unite_mesure"]) ?>"
+                    data-date="<?= e($production["date_prevue"]) ?>"
+                    data-duree-prevue="<?= e($production["duree_prevue"]) ?>"
+                    data-duree-reelle="<?= e($production["duree_reelle"]) ?>"
+                    data-taux="<?= e($production["taux_horaire"]) ?>"
+                  >
+                    <i class="bi bi-pencil-square"></i>
+                  </button>
 
-                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#supprimerModal">
-                  <i class="bi bi-trash"></i>
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>24 mai 2026</td>
-              <td>Kimchi traditionnel</td>
-              <td>60 pots</td>
-              <td>4 h</td>
-              <td>22 $ / h</td>
-              <td><span class="badge bg-info text-dark">En préparation</span></td>
-              <td>
-                <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modifierModal">
-                  <i class="bi bi-pencil-square"></i>
-                </button>
-
-                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#supprimerModal">
-                  <i class="bi bi-trash"></i>
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>27 mai 2026</td>
-              <td>Tempeh de pois</td>
-              <td>80 unités</td>
-              <td>6 h</td>
-              <td>22 $ / h</td>
-              <td><span class="badge bg-secondary">À venir</span></td>
-              <td>
-                <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modifierModal">
-                  <i class="bi bi-pencil-square"></i>
-                </button>
-
-                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#supprimerModal">
-                  <i class="bi bi-trash"></i>
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <section>
-      <h2 class="section-title mb-4">Vue production-inventaire</h2>
-
-      <div class="alert alert-warning">
-        <i class="bi bi-exclamation-triangle me-2"></i>
-        Certains produits bruts peuvent être insuffisants pour les productions planifiées.
-      </div>
-
-      <div class="table-responsive">
-        <table class="table table-bordered align-middle">
-          <thead class="table-light">
-            <tr>
-              <th>Produit brut</th>
-              <th>Besoin prévu</th>
-              <th>Stock actuel</th>
-              <th>En commande</th>
-              <th>Situation</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr>
-              <td>Pois jaunes</td>
-              <td>40 kg</td>
-              <td>25 kg</td>
-              <td>20 kg</td>
-              <td><span class="badge bg-success">Suffisant avec commande</span></td>
-            </tr>
-            <tr>
-              <td>Sel de mer</td>
-              <td>10 kg</td>
-              <td>5 kg</td>
-              <td>0 kg</td>
-              <td><span class="badge bg-danger">Manquant</span></td>
-            </tr>
-            <tr>
-              <td>Épices à choucroute</td>
-              <td>3 kg</td>
-              <td>2 kg</td>
-              <td>2 kg</td>
-              <td><span class="badge bg-warning text-dark">À surveiller</span></td>
-            </tr>
+                  <button 
+                    type="button"
+                    class="btn btn-sm btn-danger"
+                    data-bs-toggle="modal"
+                    data-bs-target="#supprimerModal"
+                    data-id="<?= e($production["id_production"]) ?>"
+                    data-produit-nom="<?= e($production["nom_produit"]) ?>"
+                  >
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            <?php endforeach; ?>
           </tbody>
         </table>
       </div>
@@ -319,78 +345,146 @@
     </div>
   </footer>
 
+  <!-- MODIFIER MODAL -->
   <div class="modal fade" id="modifierModal" tabindex="-1" aria-labelledby="modifierModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-      <div class="modal-content">
+      <form method="POST" class="modal-content">
+
         <div class="modal-header">
           <h5 class="modal-title" id="modifierModalLabel">
-            Modifier fournisseur
+            Modifier production
           </h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
         </div>
+
         <div class="modal-body">
-          <form>
+          <input type="hidden" name="id_production" id="modifier_id">
+
           <div class="row g-3">
             <div class="col-md-6">
-              <label for="nomFournisseur" class="form-label">Nom du fournisseur</label>
-              <input type="text" class="form-control" id="nomFournisseur">
-            </div>
-
-            <div class="col-md-6">
-              <label for="contactFournisseur" class="form-label">Personne contact</label>
-              <input type="text" class="form-control" id="contactFournisseur">
-            </div>
-
-            <div class="col-md-6">
-              <label for="telephoneFournisseur" class="form-label">Téléphone</label>
-              <input type="text" class="form-control" id="telephoneFournisseur">
-            </div>
-
-            <div class="col-md-6">
-              <label for="courrielFournisseur" class="form-label">Courriel</label>
-              <input type="email" class="form-control" id="courrielFournisseur">
-            </div>
-
-            <div class="col-md-6">
-              <label for="siteFournisseur" class="form-label">Site web</label>
-              <input type="text" class="form-control" id="siteFournisseur">
-            </div>
-
-            <div class="col-md-6">
-              <label for="produitFourni" class="form-label">Produit fourni</label>
-              <input type="text" class="form-control" id="produitFourni">
-            </div>
-
-            <div class="col-md-6">
-              <label for="prixProduit" class="form-label">Prix unitaire</label>
-              <input type="number" class="form-control" id="prixProduit">
-            </div>
-
-            <div class="col-md-6">
-              <label for="uniteProduit" class="form-label">Unité</label>
-              <select class="form-select" id="uniteProduit">
-                <option selected>Choisir...</option>
-                <option>kg</option>
-                <option>g</option>
-                <option>L</option>
-                <option>unité</option>
+              <label class="form-label">Produit transformé</label>
+              <select class="form-select" name="id_produit_transforme" id="modifier_produit" required>
+                <option value="">Choisir...</option>
+                <?php foreach ($produits_transformes as $produit): ?>
+                  <option value="<?= e($produit["id_produit_transforme"]) ?>">
+                    <?= e($produit["nom"]) ?>
+                  </option>
+                <?php endforeach; ?>
               </select>
             </div>
+
+            <div class="col-md-3">
+              <label class="form-label">Quantité planifiée</label>
+              <input type="number" class="form-control" name="quantite" id="modifier_quantite" required>
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label">Unité</label>
+              <select class="form-select" name="unite_mesure" id="modifier_unite" required>
+                <option value="unités">unités</option>
+                <option value="pots">pots</option>
+                <option value="kg">kg</option>
+                <option value="L">L</option>
+              </select>
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label">Date prévue</label>
+              <input type="date" class="form-control" name="date_prevue" id="modifier_date">
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label">Durée prévue</label>
+              <input type="number" step="0.01" class="form-control" name="duree_prevue" id="modifier_duree_prevue">
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label">Durée réelle</label>
+              <input type="number" step="0.01" class="form-control" name="duree_reelle" id="modifier_duree_reelle">
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label">Taux horaire</label>
+              <input type="number" step="0.01" class="form-control" name="taux_horaire" id="modifier_taux">
+            </div>
           </div>
-        </form>        </div>
+        </div>
+
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
             Annuler
           </button>
-          <button type="submit" class="btn btn-principal" onclick="">
+
+          <button type="submit" name="modifier" class="btn btn-principal">
             <i class="bi bi-check-circle me-2"></i>
             Modifier
           </button>
         </div>
-      </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- SUPPRIMER MODAL -->
+  <div class="modal fade" id="supprimerModal" tabindex="-1" aria-labelledby="supprimerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <form method="POST" class="modal-content">
+
+        <div class="modal-header">
+          <h5 class="modal-title" id="supprimerModalLabel">Confirmation</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+
+        <div class="modal-body">
+          <input type="hidden" name="id_production" id="supprimer_id">
+
+          <p>
+            Voulez-vous vraiment supprimer la production de
+            <strong id="supprimer_nom"></strong> ?
+          </p>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Annuler
+          </button>
+
+          <button type="submit" name="supprimer" class="btn btn-danger">
+            <i class="bi bi-trash me-2"></i>
+            Supprimer
+          </button>
+        </div>
+
+      </form>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+  const modifierModal = document.getElementById("modifierModal");
+
+  modifierModal.addEventListener("show.bs.modal", function (event) {
+    const button = event.relatedTarget;
+
+    document.getElementById("modifier_id").value = button.getAttribute("data-id");
+    document.getElementById("modifier_produit").value = button.getAttribute("data-produit");
+    document.getElementById("modifier_quantite").value = button.getAttribute("data-quantite");
+    document.getElementById("modifier_unite").value = button.getAttribute("data-unite");
+    document.getElementById("modifier_date").value = button.getAttribute("data-date");
+    document.getElementById("modifier_duree_prevue").value = button.getAttribute("data-duree-prevue");
+    document.getElementById("modifier_duree_reelle").value = button.getAttribute("data-duree-reelle");
+    document.getElementById("modifier_taux").value = button.getAttribute("data-taux");
+  });
+
+  const supprimerModal = document.getElementById("supprimerModal");
+
+  supprimerModal.addEventListener("show.bs.modal", function (event) {
+    const button = event.relatedTarget;
+
+    document.getElementById("supprimer_id").value = button.getAttribute("data-id");
+    document.getElementById("supprimer_nom").textContent = button.getAttribute("data-produit-nom");
+  });
+  </script>
 </body>
 </html>
