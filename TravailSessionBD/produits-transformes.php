@@ -1,8 +1,8 @@
 <?php
 require_once "liaisonBD.php";
 
-/* AJOUTER */
-if (isset($_POST["ajouter"])) {
+if(isset($_POST["ajouter"]))
+{
   $sql = "INSERT INTO produittransforme 
           (nom, quantite_stock, unite_mesure, prix_unitaire_moyen, commentaire)
           VALUES (:nom, :quantite_stock, :unite_mesure, :prix_unitaire_moyen, :commentaire)";
@@ -20,8 +20,8 @@ if (isset($_POST["ajouter"])) {
   exit;
 }
 
-/* MODIFIER */
-if (isset($_POST["modifier"])) {
+if(isset($_POST["modifier"]))
+{
   $sql = "UPDATE produittransforme
           SET nom = :nom,
               quantite_stock = :quantite_stock,
@@ -44,8 +44,8 @@ if (isset($_POST["modifier"])) {
   exit;
 }
 
-/* SUPPRIMER */
-if (isset($_POST["confirmer_supprimer"])) {
+if(isset($_POST["confirmer_supprimer"]))
+{
   $sql = "DELETE FROM produittransforme
           WHERE id_produit_transforme = :id";
 
@@ -58,10 +58,10 @@ if (isset($_POST["confirmer_supprimer"])) {
   exit;
 }
 
-/* PRODUIT À MODIFIER */
 $produit_a_modifier = null;
 
-if (isset($_GET["modifier"])) {
+if(isset($_GET["modifier"]))
+{
   $sql = "SELECT * FROM produittransforme
           WHERE id_produit_transforme = :id";
 
@@ -73,10 +73,10 @@ if (isset($_GET["modifier"])) {
   $produit_a_modifier = $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
-/* PRODUIT À SUPPRIMER */
 $produit_a_supprimer = null;
 
-if (isset($_GET["supprimer"])) {
+if(isset($_GET["supprimer"]))
+{
   $sql = "SELECT * FROM produittransforme
           WHERE id_produit_transforme = :id";
 
@@ -88,7 +88,6 @@ if (isset($_GET["supprimer"])) {
   $produit_a_supprimer = $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
-/* LISTE */
 $sql = "SELECT * FROM produittransforme";
 $stmt = $pdo->query($sql);
 $produits_transformes = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -197,7 +196,6 @@ $produits_transformes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <main class="container my-5">
 
-  <!-- AJOUTER -->
   <section class="mb-5">
     <h2 class="section-title mb-4">Ajouter un produit transformé</h2>
 
@@ -272,7 +270,6 @@ $produits_transformes = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
   </section>
 
-  <!-- LISTE -->
   <section>
     <h2 class="section-title mb-4">Liste des produits transformés</h2>
 
@@ -321,8 +318,7 @@ $produits_transformes = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
   </section>
 
-  <!-- MODIFIER SANS JS -->
-  <?php if ($produit_a_modifier): ?>
+  <?php if($produit_a_modifier): ?>
     <section class="mb-5 mt-5">
       <h2 class="section-title mb-4">Modifier un produit transformé</h2>
 
@@ -407,8 +403,7 @@ $produits_transformes = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </section>
   <?php endif; ?>
 
-  <!-- SUPPRIMER SANS JS -->
-  <?php if ($produit_a_supprimer): ?>
+  <?php if($produit_a_supprimer): ?>
     <section class="mb-5 mt-5">
       <h2 class="section-title mb-4">Supprimer un produit transformé</h2>
 
