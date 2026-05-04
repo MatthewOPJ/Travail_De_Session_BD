@@ -1,8 +1,8 @@
 <?php
 require_once "liaisonBD.php";
 
-/* AJOUTER */
-if (isset($_POST["ajouter"])) {
+if(isset($_POST["ajouter"]))
+{
   $sql = "INSERT INTO fournisseur 
           (nom, telephone, email, site_web, personne_de_contact)
           VALUES (:nom, :telephone, :email, :site_web, :personne_de_contact)";
@@ -20,8 +20,8 @@ if (isset($_POST["ajouter"])) {
   exit;
 }
 
-/* MODIFIER */
-if (isset($_POST["modifier"])) {
+if(isset($_POST["modifier"]))
+{
   $sql = "UPDATE fournisseur
           SET nom = :nom,
               telephone = :telephone,
@@ -44,20 +44,17 @@ if (isset($_POST["modifier"])) {
   exit;
 }
 
-/* SUPPRIMER */
-if (isset($_POST["supprimer"])) {
+if(isset($_POST["supprimer"]))
+{
   $sql = "DELETE FROM fournisseur WHERE id_fournisseur = :id";
 
   $stmt = $pdo->prepare($sql);
-  $stmt->execute([
-    ":id" => $_POST["id_fournisseur"]
-  ]);
+  $stmt->execute([":id" => $_POST["id_fournisseur"]]);
 
   header("Location: " . $_SERVER["PHP_SELF"]);
   exit;
 }
 
-/* LISTE */
 $sql = "SELECT * FROM fournisseur";
 $stmt = $pdo->query($sql);
 $fournisseurs = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -140,7 +137,6 @@ $fournisseurs = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </li>
           </ul>
         </li>
-
       </ul>
     </div>
   </div>
@@ -192,7 +188,6 @@ $fournisseurs = $stmt->fetchAll(PDO::FETCH_ASSOC);
               Ajouter le fournisseur
             </button>
           </div>
-
         </div>
       </form>
     </div>
@@ -306,7 +301,6 @@ $fournisseurs = $stmt->fetchAll(PDO::FETCH_ASSOC);
   </div>
 </footer>
 
-<!-- MODIFIER MODAL -->
 <div class="modal fade" id="modifierModal" tabindex="-1" aria-labelledby="modifierModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <form method="POST" class="modal-content">
@@ -366,7 +360,6 @@ $fournisseurs = $stmt->fetchAll(PDO::FETCH_ASSOC);
   </div>
 </div>
 
-<!-- SUPPRIMER MODAL -->
 <div class="modal fade" id="supprimerModal" tabindex="-1" aria-labelledby="supprimerModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <form method="POST" class="modal-content">
@@ -380,8 +373,7 @@ $fournisseurs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <input type="hidden" name="id_fournisseur" id="supprimer_id">
 
         <p>
-          Voulez-vous vraiment supprimer
-          <strong id="supprimer_nom"></strong> ?
+          Voulez-vous vraiment supprimer <strong id="supprimer_nom"></strong> ?
         </p>
       </div>
 
@@ -405,7 +397,8 @@ $fournisseurs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <script>
 const modifierModal = document.getElementById("modifierModal");
 
-modifierModal.addEventListener("show.bs.modal", function (event) {
+modifierModal.addEventListener("show.bs.modal", function(event)
+{
   const button = event.relatedTarget;
 
   document.getElementById("modifier_id").value = button.getAttribute("data-id");
@@ -418,7 +411,8 @@ modifierModal.addEventListener("show.bs.modal", function (event) {
 
 const supprimerModal = document.getElementById("supprimerModal");
 
-supprimerModal.addEventListener("show.bs.modal", function (event) {
+supprimerModal.addEventListener("show.bs.modal", function(event)
+{
   const button = event.relatedTarget;
 
   document.getElementById("supprimer_id").value = button.getAttribute("data-id");
