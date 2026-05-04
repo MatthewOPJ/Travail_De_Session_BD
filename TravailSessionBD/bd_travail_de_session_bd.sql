@@ -207,7 +207,7 @@ CREATE TABLE `produitbrut` (
 INSERT INTO `produitbrut` (`id_produit_brut`, `nom`, `quantite_stock`, `unite_mesure`, `prix_unitaire_moyen`) VALUES
 (1, 'Pois jaunes', 100, 'kg', 2.5),
 (2, 'Sel', 50, 'kg', 0.8),
-(3, 'Eau', 1000, 'L', 0.01);
+(3, 'Eau', 1000, 'L', 0.10);
 
 -- --------------------------------------------------------
 
@@ -220,6 +220,7 @@ CREATE TABLE `produittransforme` (
   `nom` varchar(100) DEFAULT NULL,
   `quantite_stock` float DEFAULT NULL,
   `unite_mesure` varchar(50) DEFAULT NULL,
+  `prix_unitaire_moyen` float DEFAULT NULL
   `commentaire` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -227,9 +228,9 @@ CREATE TABLE `produittransforme` (
 -- Dumping data for table `produittransforme`
 --
 
-INSERT INTO `produittransforme` (`id_produit_transforme`, `nom`, `quantite_stock`, `unite_mesure`, `commentaire`) VALUES
-(1, 'Tofu nature', 100, 'kg', 'Produit de base'),
-(2, 'Tofu fumée', 80, 'kg', 'Goût fumé');
+INSERT INTO `produittransforme` (`id_produit_transforme`, `nom`, `quantite_stock`, `unite_mesure`, `prix_unitaire_moyen`, `commentaire`) VALUES
+(1, 'Tofu nature', 100, 'kg', 6, 'Produit de base'),
+(2, 'Tofu fumée', 80, 'kg', 8, 'Goût fumé');
 
 -- --------------------------------------------------------
 
