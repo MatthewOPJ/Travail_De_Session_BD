@@ -1,8 +1,8 @@
 <?php
 require_once "liaisonBD.php";
 
-/* AJOUTER */
-if (isset($_POST["ajouter"])) {
+if(isset($_POST["ajouter"]))
+{
   $sql = "INSERT INTO client 
           (nom, telephone, email, site_web, contact, type_client, adresse, ville, region)
           VALUES (:nom, :telephone, :email, :site_web, :contact, :type_client, :adresse, :ville, :region)";
@@ -24,8 +24,8 @@ if (isset($_POST["ajouter"])) {
   exit;
 }
 
-/* MODIFIER */
-if (isset($_POST["modifier"])) {
+if(isset($_POST["modifier"]))
+{
   $sql = "UPDATE client
           SET nom = :nom,
               telephone = :telephone,
@@ -56,20 +56,17 @@ if (isset($_POST["modifier"])) {
   exit;
 }
 
-/* SUPPRIMER */
-if (isset($_POST["supprimer"])) {
+if(isset($_POST["supprimer"]))
+{
   $sql = "DELETE FROM client WHERE id_client = :id";
 
   $stmt = $pdo->prepare($sql);
-  $stmt->execute([
-    ":id" => $_POST["id_client"]
-  ]);
+  $stmt->execute([":id" => $_POST["id_client"]]);
 
   header("Location: " . $_SERVER["PHP_SELF"]);
   exit;
 }
 
-/* LISTE */
 $sql = "SELECT * FROM client";
 $stmt = $pdo->query($sql);
 $clients = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -101,7 +98,9 @@ $clients = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <div class="collapse navbar-collapse" id="navbarMenu">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item">
-            <a class="nav-link" href="index.php">Accueil</a>
+            <a class="nav-link" href="index.php">
+              Accueil
+            </a>
           </li>
 
           <li class="nav-item dropdown">
@@ -150,7 +149,6 @@ $clients = $stmt->fetchAll(PDO::FETCH_ASSOC);
               </li>
             </ul>
           </li>
-
         </ul>
       </div>
     </div>
@@ -314,6 +312,7 @@ $clients = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <i class="bi bi-basket2-fill me-2"></i>
             La fermenterie du Père Canuel
           </h5>
+
           <p class="footer-text mb-0">
             Système de gestion d’inventaire pour le suivi des produits,
             des stocks, des commandes et de la production.
@@ -326,6 +325,7 @@ $clients = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <i class="bi bi-envelope me-2"></i>
             contact@perecanuel.com
           </p>
+
           <p class="footer-text mb-0">
             <i class="bi bi-globe me-2"></i>
             www.perecanuel.com
@@ -338,6 +338,7 @@ $clients = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <i class="bi bi-geo-alt me-2"></i>
             Bas-Saint-Laurent, Québec
           </p>
+
           <p class="footer-text mb-0">
             <i class="bi bi-telephone me-2"></i>
             +1 418-555-1234
@@ -355,7 +356,6 @@ $clients = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
   </footer>
 
-  <!-- MODIFIER MODAL -->
   <div class="modal fade" id="modifierModal" tabindex="-1" aria-labelledby="modifierModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
       <form method="POST" class="modal-content">
@@ -441,7 +441,6 @@ $clients = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
   </div>
 
-  <!-- SUPPRIMER MODAL -->
   <div class="modal fade" id="supprimerModal" tabindex="-1" aria-labelledby="supprimerModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <form method="POST" class="modal-content">
@@ -480,7 +479,8 @@ $clients = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <script>
   const modifierModal = document.getElementById("modifierModal");
 
-  modifierModal.addEventListener("show.bs.modal", function (event) {
+  modifierModal.addEventListener("show.bs.modal", function(event)
+  {
     const button = event.relatedTarget;
 
     document.getElementById("modifier_id").value = button.getAttribute("data-id");
@@ -497,13 +497,13 @@ $clients = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
   const supprimerModal = document.getElementById("supprimerModal");
 
-  supprimerModal.addEventListener("show.bs.modal", function (event) {
+  supprimerModal.addEventListener("show.bs.modal", function(event)
+  {
     const button = event.relatedTarget;
 
     document.getElementById("supprimer_id").value = button.getAttribute("data-id");
     document.getElementById("supprimer_nom").textContent = button.getAttribute("data-nom");
   });
   </script>
-
 </body>
 </html>
