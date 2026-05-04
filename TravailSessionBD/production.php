@@ -1,80 +1,194 @@
 <?php
 require_once "liaisonBD.php";
 
-function e($value) {
-  return htmlspecialchars($value ?? "", ENT_QUOTES, "UTF-8");
+// On récupère la connexion à la base de données.
+// Selon ton fichier liaisonBD.php, le nom de la variable peut être différent.
+if (isset($pdo)) {
+    $bd = $pdo;
+} elseif (isset($connexion)) {
+    $bd = $connexion;
+} elseif (isset($conn)) {
+    $bd = $conn;
+} elseif (isset($bdd)) {
+    $bd = $bdd;
+} else {
+    die("Erreur : connexion à la base de données introuvable.");
 }
 
-/* AJOUTER */
-if (isset($_POST["ajouter"])) {
-  $sql = "INSERT INTO production 
-          (id_produit_transforme, quantite, unite_mesure, date_prevue, duree_prevue, duree_reelle, taux_horaire)
-          VALUES (:id_produit_transforme, :quantite, :unite_mesure, :date_prevue, :duree_prevue, :duree_reelle, :taux_horaire)";
+$message = "";
+$messageErreur = "";
 
-  $stmt = $pdo->prepare($sql);
-  $stmt->execute([
-    ":id_produit_transforme" => $_POST["id_produit_transforme"],
-    ":quantite" => $_POST["quantite"],
-    ":unite_mesure" => $_POST["unite_mesure"],
-    ":date_prevue" => $_POST["date_prevue"],
-    ":duree_prevue" => $_POST["duree_prevue"],
-    ":duree_reelle" => $_POST["duree_reelle"],
-    ":taux_horaire" => $_POST["taux_horaire"]
-  ]);
+try {
+    /* =========================
+       Ajouter une production
+       ========================= */
+    if (isset($_POST['ajouter'])) {
+        $idProduit = $_POST['id_produit_transforme'];
+        $quantite = $_POST['quantite'];
+        $unite = $_POST['unite_mesure'];
+        $datePrevue = $_POST['date_prevue'];
+        $dureePrevue = $_POST['duree_prevue'];
+        $tauxHoraire = $_POST['taux_horaire'];
 
-  header("Location: " . $_SERVER["PHP_SELF"]);
-  exit;
+        if ($idProduit != "" && $quantite != "" && $unite != "" && $datePrevue != "" && $dureePrevue != "" && $tauxHoraire != "") {
+            $sql = "INSERT INTO productionplanifiee
+                    (id_produit_transforme, quantite, unite_mesure, date_prevue, duree_prevue, duree_reelle, taux_horaire)
+                    VALUES
+                    (:idProduit, :quantite, :unite, :datePrevue, :dureePrevue, NULL, :tauxHoraire)";
+
+            $requete = $bd->prepare($sql);
+            $requete->execute([
+                'idProduit' => $idProduit,
+                'quantite' => $quantite,
+                'unite' => $unite,
+                'datePrevue' => $datePrevue,
+                'dureePrevue' => $dureePrevue,
+                'tauxHoraire' => $tauxHoraire
+            ]);
+
+            $message = "Production ajoutée avec succès.";
+        } else {
+            $messageErreur = "Veuillez remplir tous les champs du formulaire.";
+        }
+    }
+
+    /* =========================
+       Modifier une production
+       ========================= */
+    if (isset($_POST['modifier'])) {
+        $idProduction = $_POST['id_production'];
+        $idProduit = $_POST['id_produit_transforme'];
+        $quantite = $_POST['quantite'];
+        $unite = $_POST['unite_mesure'];
+        $datePrevue = $_POST['date_prevue'];
+        $dureePrevue = $_POST['duree_prevue'];
+        $tauxHoraire = $_POST['taux_horaire'];
+
+        $sql = "UPDATE productionplanifiee
+                SET id_produit_transforme = :idProduit,
+                    quantite = :quantite,
+                    unite_mesure = :unite,
+                    date_prevue = :datePrevue,
+                    duree_prevue = :dureePrevue,
+                    taux_horaire = :tauxHoraire
+                WHERE id_production = :idProduction";
+
+        $requete = $bd->prepare($sql);
+        $requete->execute([
+            'idProduit' => $idProduit,
+            'quantite' => $quantite,
+            'unite' => $unite,
+            'datePrevue' => $datePrevue,
+            'dureePrevue' => $dureePrevue,
+            'tauxHoraire' => $tauxHoraire,
+            'idProduction' => $idProduction
+        ]);
+
+        $message = "Production modifiée avec succès.";
+    }
+
+    /* =========================
+       Supprimer une production
+       ========================= */
+    if (isset($_POST['supprimer'])) {
+        $idProduction = $_POST['id_production'];
+
+        $sql = "DELETE FROM productionplanifiee WHERE id_production = :idProduction";
+        $requete = $bd->prepare($sql);
+        $requete->execute(['idProduction' => $idProduction]);
+
+        $message = "Production supprimée avec succès.";
+    }
+
+    /* =========================
+       Liste des produits transformés
+       ========================= */
+    $sqlProduits = "SELECT id_produit_transforme, nom, unite_mesure
+                    FROM produittransforme
+                    ORDER BY nom";
+    $requete = $bd->prepare($sqlProduits);
+    $requete->execute();
+    $produitsTransformes = $requete->fetchAll(PDO::FETCH_ASSOC);
+
+    /* =========================
+       Liste des productions planifiées
+       ========================= */
+    $sqlProductions = "SELECT pp.id_production,
+                              pp.id_produit_transforme,
+                              pp.quantite,
+                              pp.unite_mesure,
+                              pp.date_prevue,
+                              pp.duree_prevue,
+                              pp.taux_horaire,
+                              pt.nom AS nom_produit
+                       FROM productionplanifiee pp
+                       INNER JOIN produittransforme pt
+                           ON pp.id_produit_transforme = pt.id_produit_transforme
+                       ORDER BY pp.date_prevue ASC, pp.id_production DESC";
+
+    $requete = $bd->prepare($sqlProductions);
+    $requete->execute();
+    $productions = $requete->fetchAll(PDO::FETCH_ASSOC);
+
+    /* =========================
+       Besoins en produits bruts
+       ========================= */
+    $sqlInventaire = "SELECT pb.id_produit_brut,
+                             pb.nom AS produit_brut,
+                             pb.unite_mesure,
+                             pb.quantite_stock,
+                             IFNULL(SUM(r.quantite * pp.quantite), 0) AS besoin_prevu
+                      FROM produitbrut pb
+                      LEFT JOIN recette r
+                          ON pb.id_produit_brut = r.id_produit_brut
+                      LEFT JOIN productionplanifiee pp
+                          ON r.id_produit_transforme = pp.id_produit_transforme
+                          AND pp.date_prevue >= CURDATE()
+                      GROUP BY pb.id_produit_brut, pb.nom, pb.unite_mesure, pb.quantite_stock
+                      ORDER BY pb.nom";
+
+    $requete = $bd->prepare($sqlInventaire);
+    $requete->execute();
+    $inventaire = $requete->fetchAll(PDO::FETCH_ASSOC);
+
+    /* =========================
+       Produits bruts en commande
+       ========================= */
+    $sqlCommandes = "SELECT id_produit_brut, IFNULL(SUM(quantite), 0) AS quantite_commandee
+                     FROM commandebrut
+                     WHERE statut != 'reçu'
+                     GROUP BY id_produit_brut";
+
+    $requete = $bd->prepare($sqlCommandes);
+    $requete->execute();
+    $commandes = $requete->fetchAll(PDO::FETCH_ASSOC);
+
+    $produitsEnCommande = [];
+
+    foreach ($commandes as $commande) {
+        $produitsEnCommande[$commande['id_produit_brut']] = $commande['quantite_commandee'];
+    }
+
+    /* =========================
+       Vérification des manques
+       ========================= */
+    $ilYAManque = false;
+
+    foreach ($inventaire as $ligne) {
+        $idBrut = $ligne['id_produit_brut'];
+        $besoin = $ligne['besoin_prevu'];
+        $stock = $ligne['quantite_stock'];
+        $enCommande = $produitsEnCommande[$idBrut] ?? 0;
+
+        if ($besoin > ($stock + $enCommande)) {
+            $ilYAManque = true;
+        }
+    }
+
+} catch (PDOException $e) {
+    $messageErreur = "Erreur : " . $e->getMessage();
 }
-
-/* MODIFIER */
-if (isset($_POST["modifier"])) {
-  $sql = "UPDATE production
-          SET id_produit_transforme = :id_produit_transforme,
-              quantite = :quantite,
-              unite_mesure = :unite_mesure,
-              date_prevue = :date_prevue,
-              duree_prevue = :duree_prevue,
-              duree_reelle = :duree_reelle,
-              taux_horaire = :taux_horaire
-          WHERE id_production = :id_production";
-
-  $stmt = $pdo->prepare($sql);
-  $stmt->execute([
-    ":id_produit_transforme" => $_POST["id_produit_transforme"],
-    ":quantite" => $_POST["quantite"],
-    ":unite_mesure" => $_POST["unite_mesure"],
-    ":date_prevue" => $_POST["date_prevue"],
-    ":duree_prevue" => $_POST["duree_prevue"],
-    ":duree_reelle" => $_POST["duree_reelle"],
-    ":taux_horaire" => $_POST["taux_horaire"],
-    ":id_production" => $_POST["id_production"]
-  ]);
-
-  header("Location: " . $_SERVER["PHP_SELF"]);
-  exit;
-}
-
-/* SUPPRIMER */
-if (isset($_POST["supprimer"])) {
-  $sql = "DELETE FROM production WHERE id_production = :id_production";
-
-  $stmt = $pdo->prepare($sql);
-  $stmt->execute([
-    ":id_production" => $_POST["id_production"]
-  ]);
-
-  header("Location: " . $_SERVER["PHP_SELF"]);
-  exit;
-}
-
-/* LISTE PRODUITS TRANSFORMÉS */
-$sqlProduits = "SELECT id_produit_transforme, nom FROM produittransforme ORDER BY nom";
-$stmtProduits = $pdo->query($sqlProduits);
-$produits_transformes = $stmtProduits->fetchAll(PDO::FETCH_ASSOC);
-
-
 ?>
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -164,32 +278,44 @@ $produits_transformes = $stmtProduits->fetchAll(PDO::FETCH_ASSOC);
   </header>
 
   <main class="container my-5">
+    <?php if ($message != '') { ?>
+      <div class="alert alert-success">
+        <?php echo htmlspecialchars($message); ?>
+      </div>
+    <?php } ?>
+
+    <?php if ($messageErreur != '') { ?>
+      <div class="alert alert-danger">
+        <?php echo htmlspecialchars($messageErreur); ?>
+      </div>
+    <?php } ?>
+
     <section class="mb-5">
       <h2 class="section-title mb-4">Planifier une production</h2>
 
       <div class="card shadow-sm p-4">
-        <form method="POST">
+        <form method="post" action="">
           <div class="row g-3">
             <div class="col-md-6">
-              <label class="form-label">Produit transformé</label>
-              <select class="form-select" name="id_produit_transforme" required>
+              <label for="produitProduction" class="form-label">Produit transformé</label>
+              <select class="form-select" id="produitProduction" name="id_produit_transforme" required>
                 <option value="">Choisir...</option>
-                <?php foreach ($produits_transformes as $produit): ?>
-                  <option value="<?= e($produit["id_produit_transforme"]) ?>">
-                    <?= e($produit["nom"]) ?>
+                <?php foreach ($produitsTransformes as $produit) { ?>
+                  <option value="<?php echo $produit['id_produit_transforme']; ?>">
+                    <?php echo htmlspecialchars($produit['nom']); ?>
                   </option>
-                <?php endforeach; ?>
+                <?php } ?>
               </select>
             </div>
 
             <div class="col-md-3">
-              <label class="form-label">Quantité planifiée</label>
-              <input type="number" class="form-control" name="quantite" placeholder="Ex. 100" required>
+              <label for="quantitePlanifiee" class="form-label">Quantité planifiée</label>
+              <input type="number" class="form-control" id="quantitePlanifiee" name="quantite" placeholder="Ex. 100" required>
             </div>
 
             <div class="col-md-3">
-              <label class="form-label">Unité</label>
-              <select class="form-select" name="unite_mesure" required>
+              <label for="uniteProduction" class="form-label">Unité</label>
+              <select class="form-select" id="uniteProduction" name="unite_mesure" required>
                 <option value="">Choisir...</option>
                 <option value="unités">unités</option>
                 <option value="pots">pots</option>
@@ -198,24 +324,19 @@ $produits_transformes = $stmtProduits->fetchAll(PDO::FETCH_ASSOC);
               </select>
             </div>
 
-            <div class="col-md-3">
-              <label class="form-label">Date prévue</label>
-              <input type="date" class="form-control" name="date_prevue">
+            <div class="col-md-4">
+              <label for="dateProduction" class="form-label">Date prévue</label>
+              <input type="date" class="form-control" id="dateProduction" name="date_prevue" required>
             </div>
 
-            <div class="col-md-3">
-              <label class="form-label">Durée prévue</label>
-              <input type="number" step="0.01" class="form-control" name="duree_prevue" placeholder="Ex. 4">
+            <div class="col-md-4">
+              <label for="dureePrevue" class="form-label">Durée prévue</label>
+              <input type="number" step="0.5" class="form-control" id="dureePrevue" name="duree_prevue" placeholder="Ex. 4" required>
             </div>
 
-            <div class="col-md-3">
-              <label class="form-label">Durée réelle</label>
-              <input type="number" step="0.01" class="form-control" name="duree_reelle" placeholder="Ex. 4.5">
-            </div>
-
-            <div class="col-md-3">
-              <label class="form-label">Taux horaire</label>
-              <input type="number" step="0.01" class="form-control" name="taux_horaire" placeholder="Ex. 22">
+            <div class="col-md-4">
+              <label for="tauxHoraire" class="form-label">Taux horaire</label>
+              <input type="number" step="0.01" class="form-control" id="tauxHoraire" name="taux_horaire" placeholder="Ex. 22" required>
             </div>
 
             <div class="col-12">
@@ -230,7 +351,7 @@ $produits_transformes = $stmtProduits->fetchAll(PDO::FETCH_ASSOC);
     </section>
 
     <section class="mb-5">
-      <h2 class="section-title mb-4">Productions à venir</h2>
+      <h2 class="section-title mb-4">Productions planifiées</h2>
 
       <div class="table-responsive">
         <table class="table table-bordered align-middle">
@@ -239,60 +360,198 @@ $produits_transformes = $stmtProduits->fetchAll(PDO::FETCH_ASSOC);
               <th>Date prévue</th>
               <th>Produit</th>
               <th>Quantité</th>
-              <th>Unité</th>
               <th>Durée prévue</th>
-              <th>Durée réelle</th>
               <th>Taux horaire</th>
+              <th>Statut</th>
               <th>Actions</th>
             </tr>
           </thead>
 
           <tbody>
-            <?php foreach ($productions as $production): ?>
+            <?php if (count($productions) == 0) { ?>
               <tr>
-                <td><?= e($production["date_prevue"]) ?></td>
-                <td><?= e($production["nom_produit"]) ?></td>
-                <td><?= e($production["quantite"]) ?></td>
-                <td><?= e($production["unite_mesure"]) ?></td>
-                <td><?= e($production["duree_prevue"]) ?> h</td>
-                <td><?= e($production["duree_reelle"]) ?> h</td>
-                <td><?= e($production["taux_horaire"]) ?> $ / h</td>
+                <td colspan="7" class="text-center text-muted">Aucune production planifiée.</td>
+              </tr>
+            <?php } ?>
+
+            <?php foreach ($productions as $production) { ?>
+              <?php
+                $dateAujourdhui = date('Y-m-d');
+                $statut = "Planifiée";
+                $classeBadge = "bg-warning text-dark";
+
+                if ($production['date_prevue'] < $dateAujourdhui) {
+                    $statut = "Passée";
+                    $classeBadge = "bg-secondary";
+                } elseif ($production['date_prevue'] == $dateAujourdhui) {
+                    $statut = "Aujourd'hui";
+                    $classeBadge = "bg-info text-dark";
+                }
+              ?>
+              <tr>
+                <td><?php echo date('d/m/Y', strtotime($production['date_prevue'])); ?></td>
+                <td><?php echo htmlspecialchars($production['nom_produit']); ?></td>
+                <td><?php echo htmlspecialchars($production['quantite']); ?> <?php echo htmlspecialchars($production['unite_mesure']); ?></td>
+                <td><?php echo htmlspecialchars($production['duree_prevue']); ?> h</td>
+                <td><?php echo number_format($production['taux_horaire'], 2, ',', ' '); ?> $ / h</td>
+                <td><span class="badge <?php echo $classeBadge; ?>"><?php echo $statut; ?></span></td>
                 <td>
-                  <button 
-                    type="button"
-                    class="btn btn-sm btn-warning me-1"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modifierModal"
-                    data-id="<?= e($production["id_production"]) ?>"
-                    data-produit="<?= e($production["id_produit_transforme"]) ?>"
-                    data-quantite="<?= e($production["quantite"]) ?>"
-                    data-unite="<?= e($production["unite_mesure"]) ?>"
-                    data-date="<?= e($production["date_prevue"]) ?>"
-                    data-duree-prevue="<?= e($production["duree_prevue"]) ?>"
-                    data-duree-reelle="<?= e($production["duree_reelle"]) ?>"
-                    data-taux="<?= e($production["taux_horaire"]) ?>"
-                  >
+                  <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modifierModal<?php echo $production['id_production']; ?>">
                     <i class="bi bi-pencil-square"></i>
                   </button>
 
-                  <button 
-                    type="button"
-                    class="btn btn-sm btn-danger"
-                    data-bs-toggle="modal"
-                    data-bs-target="#supprimerModal"
-                    data-id="<?= e($production["id_production"]) ?>"
-                    data-produit-nom="<?= e($production["nom_produit"]) ?>"
-                  >
-                    <i class="bi bi-trash"></i>
-                  </button>
+                  <form method="post" action="" class="d-inline" onsubmit="return confirm('Voulez-vous vraiment supprimer cette production ?');">
+                    <input type="hidden" name="id_production" value="<?php echo $production['id_production']; ?>">
+                    <button type="submit" name="supprimer" class="btn btn-sm btn-danger">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </form>
                 </td>
               </tr>
-            <?php endforeach; ?>
+            <?php } ?>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title mb-4">Vue production-inventaire</h2>
+
+      <?php if ($ilYAManque) { ?>
+        <div class="alert alert-warning">
+          <i class="bi bi-exclamation-triangle me-2"></i>
+          Certains produits bruts peuvent être insuffisants pour les productions planifiées.
+        </div>
+      <?php } else { ?>
+        <div class="alert alert-success">
+          <i class="bi bi-check-circle me-2"></i>
+          Les stocks semblent suffisants pour les productions planifiées.
+        </div>
+      <?php } ?>
+
+      <div class="table-responsive">
+        <table class="table table-bordered align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Produit brut</th>
+              <th>Besoin prévu</th>
+              <th>Stock actuel</th>
+              <th>En commande</th>
+              <th>Situation</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <?php if (count($inventaire) == 0) { ?>
+              <tr>
+                <td colspan="5" class="text-center text-muted">Aucune donnée d'inventaire.</td>
+              </tr>
+            <?php } ?>
+
+            <?php foreach ($inventaire as $ligne) { ?>
+              <?php
+                $idBrut = $ligne['id_produit_brut'];
+                $besoin = $ligne['besoin_prevu'];
+                $stock = $ligne['quantite_stock'];
+                $enCommande = $produitsEnCommande[$idBrut] ?? 0;
+
+                if ($besoin == 0) {
+                    $situation = "Aucun besoin";
+                    $badge = "bg-secondary";
+                } elseif ($stock >= $besoin) {
+                    $situation = "Suffisant";
+                    $badge = "bg-success";
+                } elseif (($stock + $enCommande) >= $besoin) {
+                    $situation = "Suffisant avec commande";
+                    $badge = "bg-warning text-dark";
+                } else {
+                    $situation = "Manquant";
+                    $badge = "bg-danger";
+                }
+              ?>
+              <tr>
+                <td><?php echo htmlspecialchars($ligne['produit_brut']); ?></td>
+                <td><?php echo number_format($besoin, 2, ',', ' '); ?> <?php echo htmlspecialchars($ligne['unite_mesure']); ?></td>
+                <td><?php echo number_format($stock, 2, ',', ' '); ?> <?php echo htmlspecialchars($ligne['unite_mesure']); ?></td>
+                <td><?php echo number_format($enCommande, 2, ',', ' '); ?> <?php echo htmlspecialchars($ligne['unite_mesure']); ?></td>
+                <td><span class="badge <?php echo $badge; ?>"><?php echo $situation; ?></span></td>
+              </tr>
+            <?php } ?>
           </tbody>
         </table>
       </div>
     </section>
   </main>
+
+  <?php foreach ($productions as $production) { ?>
+    <div class="modal fade" id="modifierModal<?php echo $production['id_production']; ?>" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <form method="post" action="">
+            <div class="modal-header">
+              <h5 class="modal-title">Modifier la production</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+
+            <div class="modal-body">
+              <input type="hidden" name="id_production" value="<?php echo $production['id_production']; ?>">
+
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Produit transformé</label>
+                  <select class="form-select" name="id_produit_transforme" required>
+                    <?php foreach ($produitsTransformes as $produit) { ?>
+                      <option value="<?php echo $produit['id_produit_transforme']; ?>" <?php if ($produit['id_produit_transforme'] == $production['id_produit_transforme']) { echo 'selected'; } ?>>
+                        <?php echo htmlspecialchars($produit['nom']); ?>
+                      </option>
+                    <?php } ?>
+                  </select>
+                </div>
+
+                <div class="col-md-3">
+                  <label class="form-label">Quantité</label>
+                  <input type="number" class="form-control" name="quantite" value="<?php echo htmlspecialchars($production['quantite']); ?>" required>
+                </div>
+
+                <div class="col-md-3">
+                  <label class="form-label">Unité</label>
+                  <select class="form-select" name="unite_mesure" required>
+                    <option value="unités" <?php if ($production['unite_mesure'] == 'unités') { echo 'selected'; } ?>>unités</option>
+                    <option value="pots" <?php if ($production['unite_mesure'] == 'pots') { echo 'selected'; } ?>>pots</option>
+                    <option value="kg" <?php if ($production['unite_mesure'] == 'kg') { echo 'selected'; } ?>>kg</option>
+                    <option value="L" <?php if ($production['unite_mesure'] == 'L') { echo 'selected'; } ?>>L</option>
+                  </select>
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label">Date prévue</label>
+                  <input type="date" class="form-control" name="date_prevue" value="<?php echo htmlspecialchars($production['date_prevue']); ?>" required>
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label">Durée prévue</label>
+                  <input type="number" step="0.5" class="form-control" name="duree_prevue" value="<?php echo htmlspecialchars($production['duree_prevue']); ?>" required>
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label">Taux horaire</label>
+                  <input type="number" step="0.01" class="form-control" name="taux_horaire" value="<?php echo htmlspecialchars($production['taux_horaire']); ?>" required>
+                </div>
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+              <button type="submit" name="modifier" class="btn btn-principal">
+                <i class="bi bi-check-circle me-2"></i>
+                Modifier
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  <?php } ?>
 
   <footer class="footer-pro">
     <div class="container py-4">
@@ -345,146 +604,6 @@ $produits_transformes = $stmtProduits->fetchAll(PDO::FETCH_ASSOC);
     </div>
   </footer>
 
-  <!-- MODIFIER MODAL -->
-  <div class="modal fade" id="modifierModal" tabindex="-1" aria-labelledby="modifierModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <form method="POST" class="modal-content">
-
-        <div class="modal-header">
-          <h5 class="modal-title" id="modifierModalLabel">
-            Modifier production
-          </h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-        </div>
-
-        <div class="modal-body">
-          <input type="hidden" name="id_production" id="modifier_id">
-
-          <div class="row g-3">
-            <div class="col-md-6">
-              <label class="form-label">Produit transformé</label>
-              <select class="form-select" name="id_produit_transforme" id="modifier_produit" required>
-                <option value="">Choisir...</option>
-                <?php foreach ($produits_transformes as $produit): ?>
-                  <option value="<?= e($produit["id_produit_transforme"]) ?>">
-                    <?= e($produit["nom"]) ?>
-                  </option>
-                <?php endforeach; ?>
-              </select>
-            </div>
-
-            <div class="col-md-3">
-              <label class="form-label">Quantité planifiée</label>
-              <input type="number" class="form-control" name="quantite" id="modifier_quantite" required>
-            </div>
-
-            <div class="col-md-3">
-              <label class="form-label">Unité</label>
-              <select class="form-select" name="unite_mesure" id="modifier_unite" required>
-                <option value="unités">unités</option>
-                <option value="pots">pots</option>
-                <option value="kg">kg</option>
-                <option value="L">L</option>
-              </select>
-            </div>
-
-            <div class="col-md-3">
-              <label class="form-label">Date prévue</label>
-              <input type="date" class="form-control" name="date_prevue" id="modifier_date">
-            </div>
-
-            <div class="col-md-3">
-              <label class="form-label">Durée prévue</label>
-              <input type="number" step="0.01" class="form-control" name="duree_prevue" id="modifier_duree_prevue">
-            </div>
-
-            <div class="col-md-3">
-              <label class="form-label">Durée réelle</label>
-              <input type="number" step="0.01" class="form-control" name="duree_reelle" id="modifier_duree_reelle">
-            </div>
-
-            <div class="col-md-3">
-              <label class="form-label">Taux horaire</label>
-              <input type="number" step="0.01" class="form-control" name="taux_horaire" id="modifier_taux">
-            </div>
-          </div>
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-            Annuler
-          </button>
-
-          <button type="submit" name="modifier" class="btn btn-principal">
-            <i class="bi bi-check-circle me-2"></i>
-            Modifier
-          </button>
-        </div>
-
-      </form>
-    </div>
-  </div>
-
-  <!-- SUPPRIMER MODAL -->
-  <div class="modal fade" id="supprimerModal" tabindex="-1" aria-labelledby="supprimerModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <form method="POST" class="modal-content">
-
-        <div class="modal-header">
-          <h5 class="modal-title" id="supprimerModalLabel">Confirmation</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-        </div>
-
-        <div class="modal-body">
-          <input type="hidden" name="id_production" id="supprimer_id">
-
-          <p>
-            Voulez-vous vraiment supprimer la production de
-            <strong id="supprimer_nom"></strong> ?
-          </p>
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-            Annuler
-          </button>
-
-          <button type="submit" name="supprimer" class="btn btn-danger">
-            <i class="bi bi-trash me-2"></i>
-            Supprimer
-          </button>
-        </div>
-
-      </form>
-    </div>
-  </div>
-
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-  <script>
-  const modifierModal = document.getElementById("modifierModal");
-
-  modifierModal.addEventListener("show.bs.modal", function (event) {
-    const button = event.relatedTarget;
-
-    document.getElementById("modifier_id").value = button.getAttribute("data-id");
-    document.getElementById("modifier_produit").value = button.getAttribute("data-produit");
-    document.getElementById("modifier_quantite").value = button.getAttribute("data-quantite");
-    document.getElementById("modifier_unite").value = button.getAttribute("data-unite");
-    document.getElementById("modifier_date").value = button.getAttribute("data-date");
-    document.getElementById("modifier_duree_prevue").value = button.getAttribute("data-duree-prevue");
-    document.getElementById("modifier_duree_reelle").value = button.getAttribute("data-duree-reelle");
-    document.getElementById("modifier_taux").value = button.getAttribute("data-taux");
-  });
-
-  const supprimerModal = document.getElementById("supprimerModal");
-
-  supprimerModal.addEventListener("show.bs.modal", function (event) {
-    const button = event.relatedTarget;
-
-    document.getElementById("supprimer_id").value = button.getAttribute("data-id");
-    document.getElementById("supprimer_nom").textContent = button.getAttribute("data-produit-nom");
-  });
-  </script>
 </body>
 </html>
