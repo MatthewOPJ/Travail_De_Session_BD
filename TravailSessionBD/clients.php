@@ -1,3 +1,80 @@
+<?php
+require_once "liaisonBD.php";
+
+/* AJOUTER */
+if (isset($_POST["ajouter"])) {
+  $sql = "INSERT INTO client 
+          (nom, telephone, email, site_web, contact, type_client, adresse, ville, region)
+          VALUES (:nom, :telephone, :email, :site_web, :contact, :type_client, :adresse, :ville, :region)";
+
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute([
+    ":nom" => $_POST["nom"],
+    ":telephone" => $_POST["telephone"],
+    ":email" => $_POST["email"],
+    ":site_web" => $_POST["site_web"],
+    ":contact" => $_POST["contact"],
+    ":type_client" => $_POST["type_client"],
+    ":adresse" => $_POST["adresse"],
+    ":ville" => $_POST["ville"],
+    ":region" => $_POST["region"]
+  ]);
+
+  header("Location: " . $_SERVER["PHP_SELF"]);
+  exit;
+}
+
+/* MODIFIER */
+if (isset($_POST["modifier"])) {
+  $sql = "UPDATE client
+          SET nom = :nom,
+              telephone = :telephone,
+              email = :email,
+              site_web = :site_web,
+              contact = :contact,
+              type_client = :type_client,
+              adresse = :adresse,
+              ville = :ville,
+              region = :region
+          WHERE id_client = :id";
+
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute([
+    ":nom" => $_POST["nom"],
+    ":telephone" => $_POST["telephone"],
+    ":email" => $_POST["email"],
+    ":site_web" => $_POST["site_web"],
+    ":contact" => $_POST["contact"],
+    ":type_client" => $_POST["type_client"],
+    ":adresse" => $_POST["adresse"],
+    ":ville" => $_POST["ville"],
+    ":region" => $_POST["region"],
+    ":id" => $_POST["id_client"]
+  ]);
+
+  header("Location: " . $_SERVER["PHP_SELF"]);
+  exit;
+}
+
+/* SUPPRIMER */
+if (isset($_POST["supprimer"])) {
+  $sql = "DELETE FROM client WHERE id_client = :id";
+
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute([
+    ":id" => $_POST["id_client"]
+  ]);
+
+  header("Location: " . $_SERVER["PHP_SELF"]);
+  exit;
+}
+
+/* LISTE */
+$sql = "SELECT * FROM client";
+$stmt = $pdo->query($sql);
+$clients = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -7,7 +84,6 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
   <link type="text/css" rel="stylesheet" href="styles/clients.css"/>
-   <?php require_once "liaisonBD.php"; ?>
 </head>
 
 <body>
@@ -92,61 +168,62 @@
       <h2 class="section-title mb-4">Ajouter un client</h2>
 
       <div class="card shadow-sm p-4">
-        <form>
+        <form method="POST">
           <div class="row g-3">
+
             <div class="col-md-6">
-              <label for="nomClient" class="form-label">Nom du client</label>
-              <input type="text" class="form-control" id="nomClient" placeholder="Ex. Épicerie Chez Nous">
+              <label class="form-label">Nom du client</label>
+              <input type="text" class="form-control" name="nom" placeholder="Ex. Épicerie Chez Nous" required>
             </div>
 
             <div class="col-md-6">
-              <label for="typeClient" class="form-label">Type de client</label>
-              <select class="form-select" id="typeClient">
-                <option selected>Choisir...</option>
-                <option>Particulier</option>
-                <option>Épicerie</option>
-                <option>Restaurant</option>
-                <option>Marché public</option>
+              <label class="form-label">Type de client</label>
+              <select class="form-select" name="type_client">
+                <option value="">Choisir...</option>
+                <option value="Particulier">Particulier</option>
+                <option value="Épicerie">Épicerie</option>
+                <option value="Restaurant">Restaurant</option>
+                <option value="Marché public">Marché public</option>
               </select>
             </div>
 
             <div class="col-md-6">
-              <label for="telephoneClient" class="form-label">Téléphone</label>
-              <input type="text" class="form-control" id="telephoneClient" placeholder="Ex. 418-555-1234">
+              <label class="form-label">Téléphone</label>
+              <input type="text" class="form-control" name="telephone" placeholder="Ex. 418-555-1234">
             </div>
 
             <div class="col-md-6">
-              <label for="courrielClient" class="form-label">Courriel</label>
-              <input type="email" class="form-control" id="courrielClient" placeholder="client@email.com">
+              <label class="form-label">Courriel</label>
+              <input type="email" class="form-control" name="email" placeholder="client@email.com">
             </div>
 
             <div class="col-md-6">
-              <label for="contactClient" class="form-label">Personne contact</label>
-              <input type="text" class="form-control" id="contactClient" placeholder="Ex. Marie Tremblay">
+              <label class="form-label">Personne contact</label>
+              <input type="text" class="form-control" name="contact" placeholder="Ex. Marie Tremblay">
             </div>
 
             <div class="col-md-6">
-              <label for="siteClient" class="form-label">Site web</label>
-              <input type="text" class="form-control" id="siteClient" placeholder="www.exemple.com">
+              <label class="form-label">Site web</label>
+              <input type="text" class="form-control" name="site_web" placeholder="www.exemple.com">
             </div>
 
             <div class="col-md-6">
-              <label for="villeClient" class="form-label">Ville</label>
-              <input type="text" class="form-control" id="villeClient" placeholder="Ex. Rimouski">
+              <label class="form-label">Ville</label>
+              <input type="text" class="form-control" name="ville" placeholder="Ex. Rimouski">
             </div>
 
             <div class="col-md-6">
-              <label for="regionClient" class="form-label">Région</label>
-              <input type="text" class="form-control" id="regionClient" placeholder="Ex. Bas-Saint-Laurent">
+              <label class="form-label">Région</label>
+              <input type="text" class="form-control" name="region" placeholder="Ex. Bas-Saint-Laurent">
             </div>
 
             <div class="col-12">
-              <label for="adresseClient" class="form-label">Adresse</label>
-              <input type="text" class="form-control" id="adresseClient" placeholder="Adresse complète">
+              <label class="form-label">Adresse</label>
+              <input type="text" class="form-control" name="adresse" placeholder="Adresse complète">
             </div>
 
             <div class="col-12">
-              <button type="submit" class="btn btn-principal">
+              <button type="submit" name="ajouter" class="btn btn-principal">
                 <i class="bi bi-plus-circle me-2"></i>
                 Ajouter le client
               </button>
@@ -167,6 +244,9 @@
               <th>Type</th>
               <th>Téléphone</th>
               <th>Courriel</th>
+              <th>Contact</th>
+              <th>Site web</th>
+              <th>Adresse</th>
               <th>Ville</th>
               <th>Région</th>
               <th>Actions</th>
@@ -174,74 +254,51 @@
           </thead>
 
           <tbody>
-            <tr>
-              <td>Épicerie Chez Nous</td>
-              <td>Épicerie</td>
-              <td>418-555-1000</td>
-              <td>contact@chez-nous.ca</td>
-              <td>Rimouski</td>
-              <td>Bas-Saint-Laurent</td>
-              <td>
-                <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modifierModal">
-                  <i class="bi bi-pencil-square"></i>
-                </button>
+            <?php foreach ($clients as $client): ?>
+              <tr>
+                <td><?= htmlspecialchars($client["nom"]) ?></td>
+                <td><?= htmlspecialchars($client["type_client"]) ?></td>
+                <td><?= htmlspecialchars($client["telephone"]) ?></td>
+                <td><?= htmlspecialchars($client["email"]) ?></td>
+                <td><?= htmlspecialchars($client["contact"]) ?></td>
+                <td><?= htmlspecialchars($client["site_web"]) ?></td>
+                <td><?= htmlspecialchars($client["adresse"]) ?></td>
+                <td><?= htmlspecialchars($client["ville"]) ?></td>
+                <td><?= htmlspecialchars($client["region"]) ?></td>
 
-                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#supprimerModal">
-                  <i class="bi bi-trash"></i>
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>Café du Coin</td>
-              <td>Restaurant</td> 
-              <td>418-555-2200</td>
-              <td>info@cafeducoin.ca</td>
-              <td>Matane</td>
-              <td>Bas-Saint-Laurent</td>
-              <td>
-                <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modifierModal">
-                  <i class="bi bi-pencil-square"></i>
-                </button>
+                <td>
+                  <button 
+                    type="button"
+                    class="btn btn-sm btn-warning me-1"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modifierModal"
+                    data-id="<?= $client["id_client"] ?>"
+                    data-nom="<?= htmlspecialchars($client["nom"]) ?>"
+                    data-type="<?= htmlspecialchars($client["type_client"]) ?>"
+                    data-telephone="<?= htmlspecialchars($client["telephone"]) ?>"
+                    data-email="<?= htmlspecialchars($client["email"]) ?>"
+                    data-contact="<?= htmlspecialchars($client["contact"]) ?>"
+                    data-site="<?= htmlspecialchars($client["site_web"]) ?>"
+                    data-adresse="<?= htmlspecialchars($client["adresse"]) ?>"
+                    data-ville="<?= htmlspecialchars($client["ville"]) ?>"
+                    data-region="<?= htmlspecialchars($client["region"]) ?>"
+                  >
+                    <i class="bi bi-pencil-square"></i>
+                  </button>
 
-                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#supprimerModal">
-                  <i class="bi bi-trash"></i>
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>Marché de l’Outaouais</td>
-              <td>Marché public</td>
-              <td>819-555-3400</td>
-              <td>commandes@marcheoutaouais.ca</td>
-              <td>Gatineau</td>
-              <td>Outaouais</td>
-              <td>
-                <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modifierModal">
-                  <i class="bi bi-pencil-square"></i>
-                </button>
-
-                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#supprimerModal">
-                  <i class="bi bi-trash"></i>
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>Bistro Local</td>
-              <td>Restaurant</td>
-              <td>418-555-4400</td>
-              <td>bistro@local.ca</td>
-              <td>Rivière-du-Loup</td>
-              <td>Bas-Saint-Laurent</td>
-              <td>
-                <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modifierModal">
-                  <i class="bi bi-pencil-square"></i>
-                </button>
-
-                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#supprimerModal">
-                  <i class="bi bi-trash"></i>
-                </button>
-              </td>
-            </tr>
+                  <button 
+                    type="button"
+                    class="btn btn-sm btn-danger"
+                    data-bs-toggle="modal"
+                    data-bs-target="#supprimerModal"
+                    data-id="<?= $client["id_client"] ?>"
+                    data-nom="<?= htmlspecialchars($client["nom"]) ?>"
+                  >
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            <?php endforeach; ?>
           </tbody>
         </table>
       </div>
@@ -298,97 +355,155 @@
     </div>
   </footer>
 
-  <!-- Ça c'est le modal de modification client d'accord Thomas hahaha-->
+  <!-- MODIFIER MODAL -->
   <div class="modal fade" id="modifierModal" tabindex="-1" aria-labelledby="modifierModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-      <div class="modal-content">
+      <form method="POST" class="modal-content">
+
         <div class="modal-header">
           <h5 class="modal-title" id="modifierModalLabel">
             Modifier client
           </h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
         </div>
+
         <div class="modal-body">
-          <form id="formModification">
-            <div class="row g-3" id="champsModification">
-              <form>
-            <div class="row g-3">
+          <input type="hidden" name="id_client" id="modifier_id">
+
+          <div class="row g-3">
+
             <div class="col-md-6">
-              <label for="nomClient" class="form-label">Nom du client</label>
-              <input type="text" class="form-control" id="nomClient">
+              <label class="form-label">Nom du client</label>
+              <input type="text" class="form-control" name="nom" id="modifier_nom" required>
             </div>
+
             <div class="col-md-6">
-              <label for="typeClient" class="form-label">Type de client</label>
-              <select class="form-select" id="typeClient">
-                <option selected>Choisir...</option>
-                <option>Particulier</option>
-                <option>Épicerie</option>
-                <option>Restaurant</option>
-                <option>Marché public</option>
+              <label class="form-label">Type de client</label>
+              <select class="form-select" name="type_client" id="modifier_type">
+                <option value="">Choisir...</option>
+                <option value="Particulier">Particulier</option>
+                <option value="Épicerie">Épicerie</option>
+                <option value="Restaurant">Restaurant</option>
+                <option value="Marché public">Marché public</option>
               </select>
             </div>
+
             <div class="col-md-6">
-              <label for="telephoneClient" class="form-label">Téléphone</label>
-              <input type="text" class="form-control" id="telephoneClient">
+              <label class="form-label">Téléphone</label>
+              <input type="text" class="form-control" name="telephone" id="modifier_telephone">
             </div>
 
             <div class="col-md-6">
-              <label for="courrielClient" class="form-label">Courriel</label>
-              <input type="email" class="form-control" id="courrielClient">
+              <label class="form-label">Courriel</label>
+              <input type="email" class="form-control" name="email" id="modifier_email">
             </div>
 
             <div class="col-md-6">
-              <label for="contactClient" class="form-label">Personne contact</label>
-              <input type="text" class="form-control" id="contactClient">
+              <label class="form-label">Personne contact</label>
+              <input type="text" class="form-control" name="contact" id="modifier_contact">
             </div>
 
             <div class="col-md-6">
-              <label for="siteClient" class="form-label">Site web</label>
-              <input type="text" class="form-control" id="siteClient">
+              <label class="form-label">Site web</label>
+              <input type="text" class="form-control" name="site_web" id="modifier_site">
             </div>
 
             <div class="col-md-6">
-              <label for="villeClient" class="form-label">Ville</label>
-              <input type="text" class="form-control" id="villeClient">
+              <label class="form-label">Ville</label>
+              <input type="text" class="form-control" name="ville" id="modifier_ville">
             </div>
 
             <div class="col-md-6">
-              <label for="regionClient" class="form-label">Région</label>
-              <input type="text" class="form-control" id="regionClient">
+              <label class="form-label">Région</label>
+              <input type="text" class="form-control" name="region" id="modifier_region">
             </div>
 
             <div class="col-12">
-              <label for="adresseClient" class="form-label">Adresse</label>
-              <input type="text" class="form-control" id="adresseClient">
+              <label class="form-label">Adresse</label>
+              <input type="text" class="form-control" name="adresse" id="modifier_adresse">
             </div>
-          </form>
+
+          </div>
         </div>
+
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
             Annuler
           </button>
-          <button type="submit" class="btn btn-principal" onclick="">
+
+          <button type="submit" name="modifier" class="btn btn-principal">
             <i class="bi bi-check-circle me-2"></i>
             Modifier
           </button>
         </div>
-      </div>
+
+      </form>
     </div>
   </div>
 
-  <!--Modal de confirmation de suppression -->
-  <div class="modal fade" id="supprimerModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header"><h5 class="modal-title">Confirmation</h5></div>
-      <div class="modal-body">Supprimer ce client ?</div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-        <button type="button" class="btn btn-danger">Supprimer</button>
-      </div>
+  <!-- SUPPRIMER MODAL -->
+  <div class="modal fade" id="supprimerModal" tabindex="-1" aria-labelledby="supprimerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <form method="POST" class="modal-content">
+
+        <div class="modal-header">
+          <h5 class="modal-title" id="supprimerModalLabel">Confirmation</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+
+        <div class="modal-body">
+          <input type="hidden" name="id_client" id="supprimer_id">
+
+          <p>
+            Voulez-vous vraiment supprimer
+            <strong id="supprimer_nom"></strong> ?
+          </p>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Annuler
+          </button>
+
+          <button type="submit" name="supprimer" class="btn btn-danger">
+            <i class="bi bi-trash me-2"></i>
+            Supprimer
+          </button>
+        </div>
+
+      </form>
     </div>
   </div>
-</div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  </body>
+
+  <script>
+  const modifierModal = document.getElementById("modifierModal");
+
+  modifierModal.addEventListener("show.bs.modal", function (event) {
+    const button = event.relatedTarget;
+
+    document.getElementById("modifier_id").value = button.getAttribute("data-id");
+    document.getElementById("modifier_nom").value = button.getAttribute("data-nom");
+    document.getElementById("modifier_type").value = button.getAttribute("data-type");
+    document.getElementById("modifier_telephone").value = button.getAttribute("data-telephone");
+    document.getElementById("modifier_email").value = button.getAttribute("data-email");
+    document.getElementById("modifier_contact").value = button.getAttribute("data-contact");
+    document.getElementById("modifier_site").value = button.getAttribute("data-site");
+    document.getElementById("modifier_adresse").value = button.getAttribute("data-adresse");
+    document.getElementById("modifier_ville").value = button.getAttribute("data-ville");
+    document.getElementById("modifier_region").value = button.getAttribute("data-region");
+  });
+
+  const supprimerModal = document.getElementById("supprimerModal");
+
+  supprimerModal.addEventListener("show.bs.modal", function (event) {
+    const button = event.relatedTarget;
+
+    document.getElementById("supprimer_id").value = button.getAttribute("data-id");
+    document.getElementById("supprimer_nom").textContent = button.getAttribute("data-nom");
+  });
+  </script>
+
+</body>
 </html>
