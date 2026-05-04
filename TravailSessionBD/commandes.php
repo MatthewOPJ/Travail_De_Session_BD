@@ -1,12 +1,15 @@
 <?php
 require_once "liaisonBD.php";
 
-function e($value) {
+// celui qui a nommer cette fonction, je le hais
+// je modifie pas parce que la rien marche de mon côté...
+function e($value) 
+{
   return htmlspecialchars($value ?? "", ENT_QUOTES, "UTF-8");
 }
 
-/* AJOUTER */
-if (isset($_POST["ajouter"])) {
+if(isset($_POST["ajouter"])) 
+{
   $sql = "INSERT INTO commande 
           (client, produit, quantite, date_commande, statut)
           VALUES (:client, :produit, :quantite, :date_commande, :statut)";
@@ -24,8 +27,8 @@ if (isset($_POST["ajouter"])) {
   exit;
 }
 
-/* MODIFIER */
-if (isset($_POST["modifier"])) {
+if(isset($_POST["modifier"]))
+{
   $sql = "UPDATE commande
           SET client = :client,
               produit = :produit,
@@ -48,20 +51,17 @@ if (isset($_POST["modifier"])) {
   exit;
 }
 
-/* SUPPRIMER */
-if (isset($_POST["supprimer"])) {
+if(isset($_POST["supprimer"]))
+{
   $sql = "DELETE FROM commande WHERE id_commande = :id_commande";
 
   $stmt = $pdo->prepare($sql);
-  $stmt->execute([
-    ":id_commande" => $_POST["id_commande"]
-  ]);
+  $stmt->execute([":id_commande" => $_POST["id_commande"]]);
 
   header("Location: " . $_SERVER["PHP_SELF"]);
   exit;
 }
 
-/* LISTE */
 $sql = "SELECT * FROM commandeclient";
 $stmt = $pdo->query($sql);
 $commandes = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -276,6 +276,7 @@ $commandes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                   <span class="badge bg-secondary"><?= e($commande["statut"]) ?></span>
                 <?php endif; ?>
               </td>
+
               <td>
                 <button 
                   type="button"
@@ -452,7 +453,8 @@ $commandes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <script>
 const modifierModal = document.getElementById("modifierModal");
 
-modifierModal.addEventListener("show.bs.modal", function (event) {
+modifierModal.addEventListener("show.bs.modal", function(event)
+{
   const button = event.relatedTarget;
 
   document.getElementById("modifier_id").value = button.getAttribute("data-id");
@@ -465,7 +467,8 @@ modifierModal.addEventListener("show.bs.modal", function (event) {
 
 const supprimerModal = document.getElementById("supprimerModal");
 
-supprimerModal.addEventListener("show.bs.modal", function (event) {
+supprimerModal.addEventListener("show.bs.modal", function(event)
+{
   const button = event.relatedTarget;
 
   document.getElementById("supprimer_id").value = button.getAttribute("data-id");
