@@ -4,7 +4,7 @@ require_once "liaisonBD.php";
 /* AJOUTER */
 if (isset($_POST["ajouter"])) {
   $sql = "INSERT INTO produittransforme 
-          (nom, quantite_stock, unite_mesure, prix_vente, commentaire)
+          (nom, quantite_stock, unite_mesure, prix_unitaire_moyen, commentaire)
           VALUES (:nom, :quantite_stock, :unite_mesure, :prix_unitaire_moyen, :commentaire)";
 
   $stmt = $pdo->prepare($sql);
@@ -12,7 +12,7 @@ if (isset($_POST["ajouter"])) {
     ":nom" => $_POST["nom"],
     ":quantite_stock" => $_POST["quantite_stock"],
     ":unite_mesure" => $_POST["unite_mesure"],
-    ":prix_vente" => $_POST["prix_unitaire_moyen"],
+    ":prix_unitaire_moyen" => $_POST["prix_unitaire_moyen"],
     ":commentaire" => $_POST["commentaire"]
   ]);
 
@@ -26,7 +26,7 @@ if (isset($_POST["modifier"])) {
           SET nom = :nom,
               quantite_stock = :quantite_stock,
               unite_mesure = :unite_mesure,
-              prix_vente = :prix_unitaire_moyen,
+              prix_unitaire_moyen = :prix_unitaire_moyen,
               commentaire = :commentaire
           WHERE id_produit_transforme = :id";
 
@@ -35,7 +35,7 @@ if (isset($_POST["modifier"])) {
     ":nom" => $_POST["nom"],
     ":quantite_stock" => $_POST["quantite_stock"],
     ":unite_mesure" => $_POST["unite_mesure"],
-    ":prix_vente" => $_POST["prix_unitaire_moyen"],
+    ":prix_unitaire_moyen" => $_POST["prix_unitaire_moyen"],
     ":commentaire" => $_POST["commentaire"],
     ":id" => $_POST["id_produit_transforme"]
   ]);
@@ -283,7 +283,7 @@ $produits_transformes = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <th>Nom</th>
             <th>Quantité</th>
             <th>Unité</th>
-            <th>Prix de vente</th>
+            <th>Prix unitaire moyen</th>
             <th>Commentaire</th>
             <th>Actions</th>
           </tr>
@@ -370,13 +370,13 @@ $produits_transformes = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
 
             <div class="col-md-4">
-              <label class="form-label">Prix de vente</label>
+              <label class="form-label">Prix unitaire moyen</label>
               <input 
                 type="number" 
                 step="0.01" 
                 class="form-control" 
-                name="prix_vente"
-                value="<?= htmlspecialchars($produit_a_modifier["prix_vente"]) ?>"
+                name="prix_unitaire_moyen"
+                value="<?= htmlspecialchars($produit_a_modifier["prix_unitaire_moyen"]) ?>"
                 required
               >
             </div>
