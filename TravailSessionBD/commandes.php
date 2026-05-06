@@ -27,7 +27,7 @@ try {
         $statut = $_POST['statut'];
 
         if ($idClient != "" && $idProduit != "" && $quantite != "" && $prixVente != "" && $dateCommande != "" && $statut != "") {
-            // 1. On ajoute d'abord la commande du client.
+            // On ajoute d'abord la commande du client.
             $sql = "INSERT INTO commandeclient (id_client, date_commande, date_reception_prevue, statut)
                     VALUES (:idClient, :dateCommande, NULL, :statut)";
 
@@ -38,10 +38,10 @@ try {
                 'statut' => $statut
             ]);
 
-            // 2. On récupère l'identifiant de la commande qui vient d'être ajoutée.
+            // On récupère l'identifiant de la commande qui vient d'être ajoutée.
             $idCommande = $bd->lastInsertId();
 
-            // 3. On ajoute ensuite le produit commandé dans la table lignecommandeclient.
+            // On ajoute ensuite le produit commandé dans la table lignecommandeclient.
             $sql = "INSERT INTO lignecommandeclient (id_commande_client, id_produit_transforme, quantite, prix_vente)
                     VALUES (:idCommande, :idProduit, :quantite, :prixVente)";
 

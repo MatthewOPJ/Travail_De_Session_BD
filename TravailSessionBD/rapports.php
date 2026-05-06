@@ -40,13 +40,11 @@ $messageErreur = '';
 
 try {
 
-    // =========================================================
-    // 1. Rapport des ventes par produit
+    // Rapport des ventes par produit
     // Les coûts sont calculés à partir de la recette :
     // produit transformé -> recette -> produit brut.
     // Si un produit n'a pas encore de recette, on utilise par défaut
     // le prix_unitaire_moyen du produit transformé.
-    // =========================================================
 
     $conditionVentes = " WHERE 1=1 ";
     $paramsVentes = [];
@@ -98,16 +96,12 @@ try {
         $coutsTotaux = $coutsTotaux + $ligne['cout_estime'];
     }
 
-    // Le profit du résumé doit être calculé avec les mêmes montants
-    // que les deux cartes précédentes.
     $profitTotal = $ventesTotales - $coutsTotaux;
 
-    // =========================================================
-    // 2. Rapport des coûts de production
+    // Rapport des coûts de production
     // Ici, on calcule les coûts des productions planifiées.
     // Le coût des matières est multiplié par la quantité produite.
     // Si la durée réelle est vide, on utilise la durée prévue.
-    // =========================================================
 
     $conditionProduction = " WHERE 1=1 ";
     $paramsProduction = [];
@@ -151,9 +145,7 @@ try {
         $coutsProductionTotaux = $coutsProductionTotaux + $ligne['cout_total'];
     }
 
-    // =========================================================
-    // 3. Rapport de consommation des produits bruts
-    // =========================================================
+    // Rapport de consommation des produits bruts
 
     $sqlConsommation = "
         SELECT
@@ -306,7 +298,7 @@ try {
 
         <div class="col-md-4">
           <div class="card shadow-sm p-4 h-100">
-            <h5><i class="bi bi-box-seam me-2 text-warning"></i>Coûts des produits vendus</h5>
+            <h5><i class="bi bi-box-seam me-2 text-warning"></i>Coûts produits</h5>
             <p class="display-6 fw-bold mb-1"><?= number_format($coutsTotaux, 2, ',', ' ') ?> $</p>
             <p class="text-muted mb-0">Coûts estimés des produits vendus</p>
           </div>
@@ -319,6 +311,7 @@ try {
             <p class="text-muted mb-0">Ventes moins coûts estimés</p>
           </div>
         </div>
+        
       </div>
     </section>
 
@@ -402,6 +395,16 @@ try {
             <?php endforeach; ?>
           </tbody>
         </table>
+      </div>
+      <div class="row">
+        <div class="col-md-7"></div>
+        <div class="col-md-5">
+            <div class="card shadow-sm p-4 h-100">
+              <h5><i class="bi bi-box-seam me-2 text-warning"></i>Coût total des productions planifiées</h5>
+              <p class="display-6 fw-bold mb-1"><?= number_format($coutsProductionTotaux, 2, ',', ' ') ?> $</p>
+              <p class="text-muted mb-0">Coûts estimés de toutes les productions planifiées</p>
+            </div>
+          </div>
       </div>
     </section>
     <?php endif; ?>
