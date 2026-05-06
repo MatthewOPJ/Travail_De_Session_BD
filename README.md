@@ -35,9 +35,9 @@ projet/
     produits-bruts.php
     produits-transformes.php
 
-├── styles/
-│   index.css
-│   commandes.css
+styles/
+    index.css
+    commandes.css
     connexion.css
     clients.css
     fournisseurs.css
@@ -81,7 +81,11 @@ Cela permet de calculer les besoins en matières premières et les coûts de pro
 
 ## Installation du projet
 
-### 1. Installer XAMPP et Placer le projet dans le serveur local
+### 1. Installer XAMPP
+
+### 2. Placer le projet dans le serveur local
+
+### 3. Démarrer Apache et MySQL (Port 3306)
 
 Avec XAMPP, placer le dossier du projet dans :
 C:\xampp\htdocs\
