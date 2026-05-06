@@ -2,25 +2,16 @@
 require_once "liaisonBD.php";
 
 // On récupère la connexion créée dans liaisonBD.php.
-// Selon ton fichier, la variable peut s'appeler $pdo ou $connexion.
-if(isset($pdo))
-{
+// Selon ton fichier, la variable peut s'appeler $pdo, $connexion, $conn ou $bdd.
+if (isset($pdo)) {
     $bd = $pdo;
-} 
-elseif(isset($connexion))
-{
+} elseif (isset($connexion)) {
     $bd = $connexion;
-}
-elseif (isset($conn))
-{
+} elseif (isset($conn)) {
     $bd = $conn;
-}
-elseif (isset($bdd))
-{
+} elseif (isset($bdd)) {
     $bd = $bdd;
-}
-else
-{
+} else {
     die("Erreur : connexion à la base de données introuvable.");
 }
 
@@ -41,12 +32,21 @@ $consommations = [];
 
 // Indicateurs du résumé
 $ventesTotales = 0;
-$coutsTotaux = 0;
+$coutsTotaux = 0; // coûts estimés des produits vendus
 $profitTotal = 0;
+$coutsProductionTotaux = 0; // total du tableau des productions planifiées
 
 $messageErreur = '';
 
 try {
+
+    // =========================================================
+    // 1. Rapport des ventes par produit
+    // Les coûts sont calculés à partir de la recette :
+    // produit transformé -> recette -> produit brut.
+    // Si un produit n'a pas encore de recette, on utilise par défaut
+    // le prix_unitaire_moyen du produit transformé.
+    // =========================================================
 
     $conditionVentes = " WHERE 1=1 ";
     $paramsVentes = [];
@@ -67,13 +67,23 @@ try {
             pt.unite_mesure,
             SUM(lcc.quantite) AS quantite_vendue,
             SUM(lcc.quantite * lcc.prix_vente) AS produit_ventes,
-            SUM(lcc.quantite * pt.prix_unitaire_moyen) AS cout_estime,
-            SUM(lcc.quantite * lcc.prix_vente) - SUM(lcc.quantite * pt.prix_unitaire_moyen) AS profit_estime
+            SUM(lcc.quantite * IFNULL(cout.cout_unitaire, pt.prix_unitaire_moyen)) AS cout_estime,
+            SUM(lcc.quantite * lcc.prix_vente) - SUM(lcc.quantite * IFNULL(cout.cout_unitaire, pt.prix_unitaire_moyen)) AS profit_estime
         FROM lignecommandeclient lcc
         INNER JOIN commandeclient cc
             ON lcc.id_commande_client = cc.id_commande_client
         INNER JOIN produittransforme pt
             ON lcc.id_produit_transforme = pt.id_produit_transforme
+        LEFT JOIN (
+            SELECT
+                r.id_produit_transforme,
+                SUM(r.quantite * pb.prix_unitaire_moyen) AS cout_unitaire
+            FROM recette r
+            INNER JOIN produitbrut pb
+                ON r.id_produit_brut = pb.id_produit_brut
+            GROUP BY r.id_produit_transforme
+        ) cout
+            ON pt.id_produit_transforme = cout.id_produit_transforme
         $conditionVentes
         GROUP BY pt.id_produit_transforme, pt.nom, pt.unite_mesure
         ORDER BY produit_ventes DESC
@@ -84,12 +94,20 @@ try {
     $ventes = $requete->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($ventes as $ligne) {
-        $ventesTotales += $ligne['produit_ventes'];
-        $profitTotal += $ligne['profit_estime'];
+        $ventesTotales = $ventesTotales + $ligne['produit_ventes'];
+        $coutsTotaux = $coutsTotaux + $ligne['cout_estime'];
     }
 
-    
-      //  Rapport des coûts
+    // Le profit du résumé doit être calculé avec les mêmes montants
+    // que les deux cartes précédentes.
+    $profitTotal = $ventesTotales - $coutsTotaux;
+
+    // =========================================================
+    // 2. Rapport des coûts de production
+    // Ici, on calcule les coûts des productions planifiées.
+    // Le coût des matières est multiplié par la quantité produite.
+    // Si la durée réelle est vide, on utilise la durée prévue.
+    // =========================================================
 
     $conditionProduction = " WHERE 1=1 ";
     $paramsProduction = [];
@@ -110,9 +128,9 @@ try {
             pt.nom AS produit,
             pp.quantite,
             pp.unite_mesure,
-            SUM(r.quantite * pb.prix_unitaire_moyen) AS cout_matieres,
-            pp.duree_reelle * pp.taux_horaire AS cout_main_oeuvre,
-            SUM(r.quantite * pb.prix_unitaire_moyen) + (pp.duree_reelle * pp.taux_horaire) AS cout_total
+            SUM(r.quantite * pp.quantite * pb.prix_unitaire_moyen) AS cout_matieres,
+            IFNULL(pp.duree_reelle, pp.duree_prevue) * pp.taux_horaire AS cout_main_oeuvre,
+            SUM(r.quantite * pp.quantite * pb.prix_unitaire_moyen) + (IFNULL(pp.duree_reelle, pp.duree_prevue) * pp.taux_horaire) AS cout_total
         FROM productionplanifiee pp
         INNER JOIN produittransforme pt
             ON pp.id_produit_transforme = pt.id_produit_transforme
@@ -121,7 +139,7 @@ try {
         LEFT JOIN produitbrut pb
             ON r.id_produit_brut = pb.id_produit_brut
         $conditionProduction
-        GROUP BY pp.id_production, pp.date_prevue, pt.nom, pp.quantite, pp.unite_mesure, pp.duree_reelle, pp.taux_horaire
+        GROUP BY pp.id_production, pp.date_prevue, pt.nom, pp.quantite, pp.unite_mesure, pp.duree_prevue, pp.duree_reelle, pp.taux_horaire
         ORDER BY pp.date_prevue DESC
     ";
 
@@ -130,12 +148,12 @@ try {
     $coutsProduction = $requete->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($coutsProduction as $ligne) {
-        $coutsTotaux += $ligne['cout_total'];
+        $coutsProductionTotaux = $coutsProductionTotaux + $ligne['cout_total'];
     }
 
-    
-        // Rapport de consommation
-     
+    // =========================================================
+    // 3. Rapport de consommation des produits bruts
+    // =========================================================
 
     $sqlConsommation = "
         SELECT
@@ -170,7 +188,7 @@ try {
   <title>Rapports - Père Canuel</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-  <link type="text/css" rel="stylesheet" href="styles/index.css"/>
+  <link type="text/css" rel="stylesheet" href="styles/rapports.css"/>
 </head>
 
 <body>
@@ -288,9 +306,9 @@ try {
 
         <div class="col-md-4">
           <div class="card shadow-sm p-4 h-100">
-            <h5><i class="bi bi-box-seam me-2 text-warning"></i>Coûts de production</h5>
+            <h5><i class="bi bi-box-seam me-2 text-warning"></i>Coûts des produits vendus</h5>
             <p class="display-6 fw-bold mb-1"><?= number_format($coutsTotaux, 2, ',', ' ') ?> $</p>
-            <p class="text-muted mb-0">Produits bruts et main-d’œuvre</p>
+            <p class="text-muted mb-0">Coûts estimés des produits vendus</p>
           </div>
         </div>
 
@@ -377,9 +395,9 @@ try {
                 <td><?= htmlspecialchars($cout['date_prevue']) ?></td>
                 <td><?= htmlspecialchars($cout['produit']) ?></td>
                 <td><?= number_format($cout['quantite'], 2, ',', ' ') ?> <?= htmlspecialchars($cout['unite_mesure']) ?></td>
-                <td><?= number_format($cout['cout_matieres'], 2, ',', ' ') ?> $</td>
-                <td><?= number_format($cout['cout_main_oeuvre'], 2, ',', ' ') ?> $</td>
-                <td><span class="badge bg-primary"><?= number_format($cout['cout_total'], 2, ',', ' ') ?> $</span></td>
+                <td><?= number_format($cout['cout_matieres'] ?? 0, 2, ',', ' ') ?> $</td>
+                <td><?= number_format($cout['cout_main_oeuvre'] ?? 0, 2, ',', ' ') ?> $</td>
+                <td><span class="badge bg-primary"><?= number_format($cout['cout_total'] ?? 0, 2, ',', ' ') ?> $</span></td>
               </tr>
             <?php endforeach; ?>
           </tbody>

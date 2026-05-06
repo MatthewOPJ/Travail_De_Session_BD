@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : lun. 04 mai 2026 à 19:26
+-- Généré le : mer. 06 mai 2026 à 03:02
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -45,10 +45,12 @@ CREATE TABLE `client` (
 --
 
 INSERT INTO `client` (`id_client`, `nom`, `telephone`, `email`, `site_web`, `contact`, `type_client`, `adresse`, `ville`, `region`) VALUES
-(1, 'Épicerie du coin', '4184444444', 'contact@epicerie.ca', 'www.epicerie.ca', 'Paul Roy', 'épicerie', '123 rue Main', 'Rimouski', 'Bas-Saint-Laurent'),
-(2, 'Restaurant BonGoût', '4185555555', 'info@bongout.ca', 'www.bongout.ca', 'Julie Bouchard', 'restaurant', '456 rue Chef', 'Rimouski', 'Bas-Saint-Laurent'),
-(3, 'Client privé', '4186666666', 'client@mail.com', '', 'Marc Leblanc', 'Particulier', '789 rue Perso', 'Rimouski', 'Bas-Saint-Laurent'),
-(4, 'Olivier ANIMAKA', '93869366', 'olivieranimaka1995@gmail.com', 'www.olivier.com', 'Thomas', 'Particulier', '1234', 'Lomé', 'Maritime');
+(1, 'Épicerie du coin', '418-444-4444', 'contact@epicerieducoin.ca', 'www.epicerieducoin.ca', 'Paul Roy', 'Épicerie', '123 rue Saint-Germain', 'Rimouski', 'Bas-Saint-Laurent'),
+(2, 'Restaurant BonGoût', '418-555-5555', 'info@bongout.ca', 'www.bongout.ca', 'Julie Bouchard', 'Restaurant', '456 rue des Chefs', 'Rimouski', 'Bas-Saint-Laurent'),
+(3, 'Marché de l\'Outaouais', '819-222-3333', 'commande@marcheoutaouais.ca', 'www.marcheoutaouais.ca', 'Thomas Beaulieu', 'Marché alimentaire', '45 rue Principale', 'Gatineau', 'Outaouais'),
+(4, 'Café du Coin', '418-777-1212', 'achats@cafeducoin.ca', 'www.cafeducoin.ca', 'Sarah Morin', 'Café', '89 avenue de la Gare', 'Rimouski', 'Bas-Saint-Laurent'),
+(5, 'Bistro Local', '418-888-9090', 'contact@bistrolocal.ca', 'www.bistrolocal.ca', 'Nadia Fortin', 'Restaurant', '17 rue du Quai', 'Matane', 'Bas-Saint-Laurent'),
+(6, 'Client privé', '418-666-6666', 'clientprive@mail.com', '', 'Marc Leblanc', 'Particulier', '789 rue des Érables', 'Rimouski', 'Bas-Saint-Laurent');
 
 -- --------------------------------------------------------
 
@@ -72,7 +74,12 @@ CREATE TABLE `commandebrut` (
 --
 
 INSERT INTO `commandebrut` (`id_commande_brut`, `id_produit_brut`, `id_fournisseur`, `quantite`, `prix`, `date_commande`, `date_reception_prevue`, `statut`) VALUES
-(1, 1, 1, 30, 50, '2026-05-07', '2026-05-14', 'expédié');
+(1, 1, 1, 80, 92, '2026-05-01', '2026-05-08', 'En commande'),
+(2, 8, 2, 40, 28, '2026-05-02', '2026-05-09', 'En commande'),
+(3, 10, 3, 25, 102.5, '2026-05-03', '2026-05-11', 'Confirmée'),
+(4, 7, 5, 100, 120, '2026-04-28', '2026-05-05', 'Expédiée'),
+(5, 14, 4, 40, 176, '2026-05-04', '2026-05-12', 'En commande'),
+(6, 17, 5, 20, 116, '2026-04-25', '2026-05-06', 'Confirmée');
 
 -- --------------------------------------------------------
 
@@ -93,8 +100,12 @@ CREATE TABLE `commandeclient` (
 --
 
 INSERT INTO `commandeclient` (`id_commande_client`, `id_client`, `date_commande`, `date_reception_prevue`, `statut`) VALUES
-(2, 4, '2026-05-04', NULL, 'Confirmée'),
-(3, 1, '2026-05-04', NULL, 'En préparation');
+(1, 1, '2026-05-01', '2026-05-06', 'Confirmée'),
+(2, 2, '2026-05-02', '2026-05-07', 'En préparation'),
+(3, 3, '2026-05-03', '2026-05-09', 'Expédiée'),
+(4, 4, '2026-05-04', '2026-05-10', 'Livrée'),
+(5, 5, '2026-05-04', '2026-05-11', 'Confirmée'),
+(6, 6, '2026-05-04', '2026-05-12', 'En préparation');
 
 -- --------------------------------------------------------
 
@@ -116,9 +127,11 @@ CREATE TABLE `fournisseur` (
 --
 
 INSERT INTO `fournisseur` (`id_fournisseur`, `nom`, `telephone`, `email`, `site_web`, `personne_de_contact`) VALUES
-(1, 'AgriNord', '4181111111', 'contact@agrinord.ca', 'www.agrinord.ca', 'Jean Tremblay'),
-(2, 'SelPlus', '4182222222', 'info@selplus.ca', 'www.selplus.ca', 'Marie Gagnon'),
-(3, 'HydroSource', '4183333333', 'support@hydro.ca', 'www.hydro.ca', 'Luc Martin');
+(1, 'Ferme du Littoral', '418-111-1111', 'contact@fermedulittoral.ca', 'www.fermedulittoral.ca', 'Jean Tremblay'),
+(2, 'Sel du Fleuve', '418-222-2222', 'info@seldufleuve.ca', 'www.seldufleuve.ca', 'Marie Gagnon'),
+(3, 'Épices Boréales', '418-333-3333', 'commandes@epicesboreales.ca', 'www.epicesboreales.ca', 'Luc Martin'),
+(4, 'Jardins du Bas-Saint-Laurent', '418-444-1212', 'vente@jardinsbsl.ca', 'www.jardinsbsl.ca', 'Anne Côté'),
+(5, 'Coop Fermentation', '418-555-7878', 'service@coopfermentation.ca', 'www.coopfermentation.ca', 'Hugo Pelletier');
 
 -- --------------------------------------------------------
 
@@ -138,9 +151,23 @@ CREATE TABLE `fournisseurproduit` (
 --
 
 INSERT INTO `fournisseurproduit` (`id_fournisseur`, `id_produit_brut`, `prix_unitaire`, `unite_mesure`) VALUES
-(1, 1, 2.5, 'kg'),
-(2, 2, 0.8, 'kg'),
-(3, 3, 0.01, 'L');
+(1, 1, 1.15, 'kg'),
+(1, 2, 1.4, 'kg'),
+(1, 3, 1.05, 'kg'),
+(1, 4, 1.3, 'kg'),
+(2, 8, 0.7, 'kg'),
+(3, 9, 3.4, 'kg'),
+(3, 10, 4.1, 'kg'),
+(3, 11, 4.9, 'kg'),
+(3, 15, 2.9, 'kg'),
+(4, 5, 1.75, 'kg'),
+(4, 6, 1.55, 'kg'),
+(4, 14, 4.4, 'kg'),
+(5, 7, 1.2, 'kg'),
+(5, 12, 1.05, 'kg'),
+(5, 13, 2.7, 'kg'),
+(5, 16, 0.02, 'L'),
+(5, 17, 5.8, 'kg');
 
 -- --------------------------------------------------------
 
@@ -161,8 +188,16 @@ CREATE TABLE `lignecommandeclient` (
 --
 
 INSERT INTO `lignecommandeclient` (`id_ligne`, `id_commande_client`, `id_produit_transforme`, `quantite`, `prix_vente`) VALUES
-(2, 2, 1, 25, 9.5),
-(3, 3, 18, 50, 8);
+(1, 1, 1, 24, 11.2),
+(2, 1, 2, 18, 13.3),
+(3, 2, 5, 36, 9.8),
+(4, 3, 8, 48, 8.05),
+(5, 3, 9, 36, 8.4),
+(6, 4, 4, 20, 9.45),
+(7, 5, 3, 30, 10.15),
+(8, 5, 10, 12, 14.7),
+(9, 6, 6, 15, 9.1),
+(10, 6, 7, 15, 11.55);
 
 -- --------------------------------------------------------
 
@@ -186,8 +221,14 @@ CREATE TABLE `productionplanifiee` (
 --
 
 INSERT INTO `productionplanifiee` (`id_production`, `id_produit_transforme`, `quantite`, `unite_mesure`, `date_prevue`, `duree_prevue`, `duree_reelle`, `taux_horaire`) VALUES
-(2, 1, 100, 'unités', '2026-05-05', 8, NULL, 21),
-(3, 18, 150, 'unités', '2026-05-06', 3, NULL, 21);
+(1, 1, 100, 'pots', '2026-05-07', 5, 5.2, 22),
+(2, 2, 80, 'pots', '2026-05-09', 4.5, 4.7, 22),
+(3, 3, 120, 'unités', '2026-05-10', 6, 6, 23),
+(4, 4, 70, 'pots', '2026-05-12', 4, 4.2, 22),
+(5, 5, 90, 'pots', '2026-05-14', 4, NULL, 22),
+(6, 8, 150, 'bouteilles', '2026-05-16', 5.5, NULL, 21),
+(7, 9, 130, 'bouteilles', '2026-05-18', 5.5, NULL, 21),
+(8, 10, 60, 'pots', '2026-05-20', 7, NULL, 24);
 
 -- --------------------------------------------------------
 
@@ -208,22 +249,23 @@ CREATE TABLE `produitbrut` (
 --
 
 INSERT INTO `produitbrut` (`id_produit_brut`, `nom`, `quantite_stock`, `unite_mesure`, `prix_unitaire_moyen`) VALUES
-(1, 'Tomates fraîches', 150, 'kg', 2.5),
-(2, 'Oignons', 100, 'kg', 1.8),
-(3, 'Pommes de terre', 250, 'kg', 1.2),
-(4, 'Carottes', 180, 'kg', 1.6),
-(5, 'Poivrons rouges', 75, 'kg', 3.25),
-(6, 'Farine de blé', 300, 'kg', 0.95),
-(7, 'Sucre', 200, 'kg', 1.1),
-(8, 'Sel', 120, 'kg', 0.45),
-(9, 'Huile végétale', 80, 'litre', 4.75),
-(10, 'Lait cru', 500, 'litre', 1.35),
-(11, 'Cacao brut', 60, 'kg', 6.8),
-(12, 'Maïs', 400, 'kg', 0.85),
-(13, 'Riz brut', 350, 'kg', 1.4),
-(14, 'Poisson frais', 90, 'kg', 7.5),
-(15, 'Mangues fraîches', 130, 'kg', 2.2),
-(16, 'oeuf', 10, 'unité', 6.5);
+(1, 'Chou blanc', 350, 'kg', 12),
+(2, 'Chou rouge', 180, 'kg', 14.5),
+(3, 'Carottes', 220, 'kg', 11),
+(4, 'Betteraves', 160, 'kg', 13.5),
+(5, 'Radis daikon', 90, 'kg', 18),
+(6, 'Concombres', 240, 'kg', 16),
+(7, 'Pois jaunes', 300, 'kg', 12.5),
+(8, 'Sel de mer', 80, 'kg', 7.5),
+(9, 'Ail', 50, 'kg', 8),
+(10, 'Gingembre', 45, 'kg', 6.5),
+(11, 'Piment rouge', 35, 'kg', 5),
+(12, 'Sucre', 120, 'kg', 11),
+(13, 'Thé noir', 60, 'kg', 8.5),
+(14, 'Framboises', 70, 'kg', 6),
+(15, 'Aneth', 160, 'kg', 4),
+(16, 'Eau filtrée', 1000, 'L', 4),
+(17, 'Koji de riz', 40, 'kg', 6);
 
 -- --------------------------------------------------------
 
@@ -245,17 +287,16 @@ CREATE TABLE `produittransforme` (
 --
 
 INSERT INTO `produittransforme` (`id_produit_transforme`, `nom`, `quantite_stock`, `unite_mesure`, `prix_unitaire_moyen`, `commentaire`) VALUES
-(1, 'Sauce tomate', 200, 'unités', 10.5, 'Qui n\'utilise pas la sauce tomate quand il cuisine. Hahaha!'),
-(12, 'Choucroute nature', 120, 'pots', 8, 'Produit fermenté à base de chou blanc.'),
-(13, 'Kimchi traditionnel', 95, 'pots', 9.5, 'Produit épicé inspiré de la fermentation coréenne.'),
-(14, 'Tempeh de pois', 80, 'unités', 7.25, 'Produit végétal riche en protéines.'),
-(15, 'Betteraves lacto-fermentées', 70, 'pots', 6.75, 'Produit à base de betteraves fermentées.'),
-(16, 'Cornichons à l’aneth', 110, 'pots', 7, 'Cornichons fermentés avec aneth et épices.'),
-(17, 'Carottes lacto-fermentées', 85, 'pots', 6.5, 'Carottes fermentées naturellement.'),
-(18, 'Sauerkraut rouge', 60, 'pots', 8.25, 'Choucroute rouge à base de chou rouge fermenté.'),
-(19, 'Kombucha gingembre', 150, 'bouteilles', 5.75, 'Boisson fermentée au gingembre.'),
-(20, 'Kombucha framboise', 130, 'bouteilles', 6, 'Boisson fermentée aromatisée à la framboise.'),
-(21, 'Miso de pois jaunes', 45, 'pots', 10.5, 'Pâte fermentée à base de pois jaunes.');
+(1, 'Choucroute nature', 120, 'pots', 8, 'Produit fermenté à base de chou blanc.'),
+(2, 'Kimchi traditionnel', 95, 'pots', 9.5, 'Produit épicé inspiré de la fermentation coréenne.'),
+(3, 'Tempeh de pois', 80, 'unités', 7.25, 'Produit végétal riche en protéines.'),
+(4, 'Betteraves lacto-fermentées', 70, 'pots', 6.75, 'Produit à base de betteraves fermentées.'),
+(5, 'Cornichons à l\'aneth', 110, 'pots', 4, 'Cornichons fermentés avec aneth et épices.'),
+(6, 'Carottes lacto-fermentées', 85, 'pots', 6.5, 'Carottes fermentées naturellement.'),
+(7, 'Sauerkraut rouge', 60, 'pots', 8.25, 'Choucroute rouge à base de chou rouge fermenté.'),
+(8, 'Kombucha gingembre', 150, 'bouteilles', 5.75, 'Boisson fermentée au gingembre.'),
+(9, 'Kombucha framboise', 130, 'bouteilles', 6, 'Boisson fermentée aromatisée à la framboise.'),
+(10, 'Miso de pois jaunes', 45, 'pots', 10.5, 'Pâte fermentée à base de pois jaunes et de koji.');
 
 -- --------------------------------------------------------
 
@@ -314,6 +355,46 @@ CREATE TABLE `recette` (
   `unite_mesure` varchar(50) DEFAULT NULL,
   `quantite_resultat` float DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `recette`
+--
+
+INSERT INTO `recette` (`id_produit_transforme`, `id_produit_brut`, `quantite`, `unite_mesure`, `quantite_resultat`) VALUES
+(1, 1, 0.6, 'kg', 1),
+(1, 8, 0.015, 'kg', 1),
+(2, 1, 0.45, 'kg', 1),
+(2, 3, 0.12, 'kg', 1),
+(2, 5, 0.08, 'kg', 1),
+(2, 8, 0.012, 'kg', 1),
+(2, 9, 0.02, 'kg', 1),
+(2, 10, 0.02, 'kg', 1),
+(2, 11, 0.015, 'kg', 1),
+(3, 7, 0.5, 'kg', 1),
+(3, 16, 0.2, 'L', 1),
+(4, 4, 0.55, 'kg', 1),
+(4, 8, 0.015, 'kg', 1),
+(4, 9, 0.01, 'kg', 1),
+(5, 6, 0.6, 'kg', 1),
+(5, 8, 0.012, 'kg', 1),
+(5, 9, 0.01, 'kg', 1),
+(5, 15, 0.015, 'kg', 1),
+(6, 3, 0.55, 'kg', 1),
+(6, 8, 0.015, 'kg', 1),
+(6, 10, 0.01, 'kg', 1),
+(7, 2, 0.6, 'kg', 1),
+(7, 8, 0.015, 'kg', 1),
+(8, 10, 0.03, 'kg', 1),
+(8, 12, 0.06, 'kg', 1),
+(8, 13, 0.02, 'kg', 1),
+(8, 16, 0.75, 'L', 1),
+(9, 12, 0.06, 'kg', 1),
+(9, 13, 0.02, 'kg', 1),
+(9, 14, 0.1, 'kg', 1),
+(9, 16, 0.75, 'L', 1),
+(10, 7, 0.45, 'kg', 1),
+(10, 8, 0.03, 'kg', 1),
+(10, 17, 0.15, 'kg', 1);
 
 -- --------------------------------------------------------
 
@@ -471,49 +552,37 @@ ALTER TABLE `recette`
 -- AUTO_INCREMENT pour la table `client`
 --
 ALTER TABLE `client`
-  MODIFY `id_client` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_client` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT pour la table `commandebrut`
 --
 ALTER TABLE `commandebrut`
-  MODIFY `id_commande_brut` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT pour la table `commandeclient`
---
-ALTER TABLE `commandeclient`
-  MODIFY `id_commande_client` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_commande_brut` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT pour la table `fournisseur`
 --
 ALTER TABLE `fournisseur`
-  MODIFY `id_fournisseur` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT pour la table `lignecommandeclient`
---
-ALTER TABLE `lignecommandeclient`
-  MODIFY `id_ligne` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_fournisseur` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT pour la table `productionplanifiee`
 --
 ALTER TABLE `productionplanifiee`
-  MODIFY `id_production` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_production` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT pour la table `produitbrut`
 --
 ALTER TABLE `produitbrut`
-  MODIFY `id_produit_brut` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id_produit_brut` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT pour la table `produittransforme`
 --
 ALTER TABLE `produittransforme`
-  MODIFY `id_produit_transforme` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id_produit_transforme` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Contraintes pour les tables déchargées
@@ -527,24 +596,11 @@ ALTER TABLE `commandebrut`
   ADD CONSTRAINT `commandebrut_ibfk_2` FOREIGN KEY (`id_fournisseur`) REFERENCES `fournisseur` (`id_fournisseur`);
 
 --
--- Contraintes pour la table `commandeclient`
---
-ALTER TABLE `commandeclient`
-  ADD CONSTRAINT `commandeclient_ibfk_1` FOREIGN KEY (`id_client`) REFERENCES `client` (`id_client`);
-
---
 -- Contraintes pour la table `fournisseurproduit`
 --
 ALTER TABLE `fournisseurproduit`
   ADD CONSTRAINT `fournisseurproduit_ibfk_1` FOREIGN KEY (`id_fournisseur`) REFERENCES `fournisseur` (`id_fournisseur`) ON DELETE CASCADE,
   ADD CONSTRAINT `fournisseurproduit_ibfk_2` FOREIGN KEY (`id_produit_brut`) REFERENCES `produitbrut` (`id_produit_brut`) ON DELETE CASCADE;
-
---
--- Contraintes pour la table `lignecommandeclient`
---
-ALTER TABLE `lignecommandeclient`
-  ADD CONSTRAINT `lignecommandeclient_ibfk_1` FOREIGN KEY (`id_commande_client`) REFERENCES `commandeclient` (`id_commande_client`) ON DELETE CASCADE,
-  ADD CONSTRAINT `lignecommandeclient_ibfk_2` FOREIGN KEY (`id_produit_transforme`) REFERENCES `produittransforme` (`id_produit_transforme`);
 
 --
 -- Contraintes pour la table `productionplanifiee`
